@@ -170,6 +170,7 @@ namespace Roslynator.CSharp.Refactorings
         public const string Uncomment = "Uncomment";
         public const string UseExpressionBodiedMember = "UseExpressionBodiedMember";
         public const string WrapInCondition = "WrapInCondition";
+        public const string WrapInElseClause = "WrapInElseClause";
         public const string WrapInIfDirective = "WrapInIfDirective";
         public const string WrapInRegion = "WrapInRegion";
         public const string WrapInTryCatch = "WrapInTryCatch";

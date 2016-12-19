@@ -17,6 +17,21 @@ namespace Roslynator.CSharp
 
         public abstract SyntaxList<StatementSyntax> Statements { get; }
 
+        public SyntaxKind Kind
+        {
+            get { return Node.Kind(); }
+        }
+
+        public virtual bool IsBlock
+        {
+            get { return false; }
+        }
+
+        public virtual bool IsSwitchSection
+        {
+            get { return false; }
+        }
+
         public abstract SyntaxNode NodeWithStatements(SyntaxList<StatementSyntax> statements);
 
         public static bool TryCreate(SyntaxNode nodeWithStatements, out StatementContainer container)
@@ -49,16 +64,6 @@ namespace Roslynator.CSharp
 
             container = null;
             return false;
-        }
-
-        public virtual bool IsBlock
-        {
-            get { return false; }
-        }
-
-        public virtual bool IsSwitchSection
-        {
-            get { return false; }
         }
     }
 }

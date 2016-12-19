@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -67,6 +68,13 @@ namespace Roslynator.CSharp
             }
 
             return ifStatement;
+        }
+
+        public static bool EndsWithElse(IfStatementSyntax ifStatement)
+        {
+            return GetChain(ifStatement)
+                .Last()
+                .IsKind(SyntaxKind.ElseClause);
         }
 
         public static bool IsTopmostIf(IfStatementSyntax ifStatement)

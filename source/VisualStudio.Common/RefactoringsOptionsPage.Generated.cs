@@ -176,6 +176,7 @@ namespace Roslynator.VisualStudio
             Uncomment = true;
             UseExpressionBodiedMember = true;
             WrapInCondition = true;
+            WrapInElseClause = true;
             WrapInIfDirective = true;
             WrapInRegion = true;
             WrapInTryCatch = true;
@@ -348,6 +349,7 @@ namespace Roslynator.VisualStudio
             SetIsEnabled(RefactoringIdentifiers.Uncomment, Uncomment);
             SetIsEnabled(RefactoringIdentifiers.UseExpressionBodiedMember, UseExpressionBodiedMember);
             SetIsEnabled(RefactoringIdentifiers.WrapInCondition, WrapInCondition);
+            SetIsEnabled(RefactoringIdentifiers.WrapInElseClause, WrapInElseClause);
             SetIsEnabled(RefactoringIdentifiers.WrapInIfDirective, WrapInIfDirective);
             SetIsEnabled(RefactoringIdentifiers.WrapInRegion, WrapInRegion);
             SetIsEnabled(RefactoringIdentifiers.WrapInTryCatch, WrapInTryCatch);
@@ -1989,6 +1991,16 @@ namespace Roslynator.VisualStudio
         [Description("Syntax: selected statements")]
         [TypeConverter(typeof (EnabledDisabledConverter))]
         public bool WrapInCondition
+        {
+            get;
+            set;
+        }
+
+        [Category(RefactoringCategory)]
+        [DisplayName("Wrap in else clause")]
+        [Description("Syntax: statement")]
+        [TypeConverter(typeof (EnabledDisabledConverter))]
+        public bool WrapInElseClause
         {
             get;
             set;
