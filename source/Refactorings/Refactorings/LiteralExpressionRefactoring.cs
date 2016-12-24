@@ -32,6 +32,16 @@ namespace Roslynator.CSharp.Refactorings
 
                         break;
                     }
+                case SyntaxKind.NumericLiteralExpression:
+                    {
+                        if (context.IsRefactoringEnabled(RefactoringIdentifiers.ReplaceHexadecimalLiteralWithDecimalLiteral)
+                            && context.Span.IsBetweenSpans(literalExpression))
+                        {
+                            ReplaceHexadecimalLiteralWithDecimalLiteralRefactoring.ComputeRefactoring(context, literalExpression);
+                        }
+
+                        break;
+                    }
             }
         }
     }

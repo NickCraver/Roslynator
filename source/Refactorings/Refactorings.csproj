@@ -41,6 +41,8 @@
     <AssemblyOriginatorKeyFile>Roslynator.CSharp.Refactorings.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="HexadecimalLiteralInfo.cs" />
+    <Compile Include="HexadecimalLiteralSuffixKind.cs" />
     <Compile Include="Refactorings\MarkContainingClassAsAbstractRefactoring.cs" />
     <Compile Include="Refactorings\MakeMemberVirtualRefactoring.cs" />
     <Compile Include="Refactorings\CastExpressionRefactoring.cs" />
@@ -266,6 +268,7 @@
     <Compile Include="Refactorings\SplitSwitchLabelsRefactoring.cs" />
     <Compile Include="Refactorings\ReplaceForWithWhileRefactoring.cs" />
     <Compile Include="Refactorings\ReplaceCastWithAsRefactoring.cs" />
+    <Compile Include="Refactorings\ReplaceHexadecimalLiteralWithDecimalLiteralRefactoring.cs" />
     <Compile Include="SelectedExpressions.cs" />
     <Compile Include="StringExpressionChain.cs" />
     <Compile Include="SyntaxHelper.cs" />

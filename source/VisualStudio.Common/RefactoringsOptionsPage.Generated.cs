@@ -143,6 +143,7 @@ namespace Roslynator.VisualStudio
             ReplaceForWithForEach = true;
             ReplaceForWithWhile = true;
             ReplaceHasFlagWithBitwiseOperation = true;
+            ReplaceHexadecimalLiteralWithDecimalLiteral = true;
             ReplaceIfElseWithAssignment = true;
             ReplaceIfElseWithSwitch = true;
             ReplaceIfStatementWithReturnStatement = true;
@@ -316,6 +317,7 @@ namespace Roslynator.VisualStudio
             SetIsEnabled(RefactoringIdentifiers.ReplaceForWithForEach, ReplaceForWithForEach);
             SetIsEnabled(RefactoringIdentifiers.ReplaceForWithWhile, ReplaceForWithWhile);
             SetIsEnabled(RefactoringIdentifiers.ReplaceHasFlagWithBitwiseOperation, ReplaceHasFlagWithBitwiseOperation);
+            SetIsEnabled(RefactoringIdentifiers.ReplaceHexadecimalLiteralWithDecimalLiteral, ReplaceHexadecimalLiteralWithDecimalLiteral);
             SetIsEnabled(RefactoringIdentifiers.ReplaceIfElseWithAssignment, ReplaceIfElseWithAssignment);
             SetIsEnabled(RefactoringIdentifiers.ReplaceIfElseWithSwitch, ReplaceIfElseWithSwitch);
             SetIsEnabled(RefactoringIdentifiers.ReplaceIfStatementWithReturnStatement, ReplaceIfStatementWithReturnStatement);
@@ -1661,6 +1663,16 @@ namespace Roslynator.VisualStudio
         [Description("Syntax: Enum.HasFlag method invocation")]
         [TypeConverter(typeof (EnabledDisabledConverter))]
         public bool ReplaceHasFlagWithBitwiseOperation
+        {
+            get;
+            set;
+        }
+
+        [Category(RefactoringCategory)]
+        [DisplayName("Replace hexadecimal literal with decimal literal")]
+        [Description("Syntax: hexadecimal literal")]
+        [TypeConverter(typeof (EnabledDisabledConverter))]
+        public bool ReplaceHexadecimalLiteralWithDecimalLiteral
         {
             get;
             set;
