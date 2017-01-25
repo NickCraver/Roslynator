@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -428,8 +429,16 @@ namespace Roslynator.CSharp
             return document.WithText(newSourceText);
         }
 
+        public static Task<Document> RemoveDirectivesAsync(
+            Document document,
+            CancellationToken cancellationToken = default(CancellationToken))
+        {
+            return RemoveDirectivesAsync(document, DirectiveRemoveOptions.All, cancellationToken);
+        }
+
         public static async Task<Document> RemoveDirectivesAsync(
             Document document,
+            DirectiveRemoveOptions removeOptions,
             CancellationToken cancellationToken = default(CancellationToken))
         {
             if (document == null)
@@ -439,9 +448,35 @@ namespace Roslynator.CSharp
 
             SourceText sourceText = await document.GetTextAsync(cancellationToken).ConfigureAwait(false);
 
-            SourceText newSourceText = RemoveDirectives(sourceText, root.DescendantDirectives());
+            SourceText newSourceText = RemoveDirectives(sourceText, GetDirectives(root, removeOptions));
 
             return document.WithText(newSourceText);
+        }
+
+        private static IEnumerable<DirectiveTriviaSyntax> GetDirectives(SyntaxNode root, DirectiveRemoveOptions removeOptions)
+        {
+            switch (removeOptions)
+            {
+                case DirectiveRemoveOptions.All:
+                    {
+                        return root.DescendantDirectives();
+                    }
+                case DirectiveRemoveOptions.AllExceptRegion:
+                    {
+                        return root
+                            .DescendantDirectives()
+                            .Where(f => !f.IsKind(SyntaxKind.RegionDirectiveTrivia, SyntaxKind.EndRegionDirectiveTrivia));
+                    }
+                case DirectiveRemoveOptions.Region:
+                    {
+                        return root.DescendantRegionDirectives();
+                    }
+                default:
+                    {
+                        Debug.Assert(false, "");
+                        return Enumerable.Empty<DirectiveTriviaSyntax>(); ;
+                    }
+            }
         }
 
         public static async Task<Document> RemoveRegionAsync(

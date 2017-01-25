@@ -42,6 +42,7 @@
     <AssemblyOriginatorKeyFile>Roslynator.CSharp.Refactorings.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="DocumentRefactoring.cs" />
     <Compile Include="Refactorings\AddExceptionToDocumentationComment\ThrowExpressionInfo.cs" />
     <Compile Include="Refactorings\AddExceptionToDocumentationComment\ThrowInfo.cs" />
     <Compile Include="Formatting\CSharpFormatter.cs" />

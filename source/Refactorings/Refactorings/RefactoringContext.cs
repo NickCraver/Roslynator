@@ -152,6 +152,8 @@ namespace Roslynator.CSharp.Refactorings
             ComputeRefactoringsForTrivia();
 
             await ComputeRefactoringsForNodeAsync().ConfigureAwait(false);
+
+            ComputeRefactoringForDocument();
         }
 
         public void ComputeRefactoringsForTriviaInsideTrivia()
@@ -776,6 +778,15 @@ namespace Roslynator.CSharp.Refactorings
             await SyntaxNodeRefactoring.ComputeRefactoringsAsync(this, firstNode).ConfigureAwait(false);
 
             CommentTriviaRefactoring.ComputeRefactorings(this, firstNode);
+        }
+
+        private void ComputeRefactoringForDocument()
+        {
+            if (Span.Start == 0
+                && Span.Length == 0)
+            {
+                DocumentRefactoring.ComputeRefactoring(this);
+            }
         }
 
         public bool IsRefactoringEnabled(string identifier)
