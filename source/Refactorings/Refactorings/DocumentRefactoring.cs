@@ -1,5 +1,6 @@
 ﻿// Copyright (c) Josef Pihrt. All rights reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Roslynator.Extensions;
@@ -33,6 +34,10 @@ namespace Roslynator.CSharp.Refactorings
             context.RegisterRefactoring(
                 "Remove all region directives",
                 c => Remover.RemoveDirectivesAsync(context.Document, DirectiveRemoveOptions.Region, c));
+
+            context.RegisterRefactoring(
+                "Add documentation comments",
+                c => DocumentationCommentGenerator.GenerateAndAttachAsync(context.Document, cancellationToken: c));
 
             context.RegisterRefactoring(
                 "Format document",
