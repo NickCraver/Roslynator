@@ -5,6 +5,7 @@ using System.Diagnostics;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Roslynator.CSharp.Analysis;
 using Roslynator.CSharp.Extensions;
 using Roslynator.Extensions;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
@@ -812,6 +813,16 @@ namespace Roslynator.CSharp
             return Token(SyntaxKind.AbstractKeyword);
         }
 
+        public static SyntaxToken YieldKeyword()
+        {
+            return Token(SyntaxKind.YieldKeyword);
+        }
+
+        public static SyntaxToken BreakKeyword()
+        {
+            return Token(SyntaxKind.BreakKeyword);
+        }
+
         public static IdentifierNameSyntax VarType()
         {
             return IdentifierName("var");
@@ -977,7 +988,7 @@ namespace Roslynator.CSharp
 
         private static ExpressionSyntax ParenthesizeIfNecessary(ExpressionSyntax expression, SyntaxKind parentKind)
         {
-            if (CSharpUtility.GetOperatorPrecedence(expression) > CSharpUtility.GetOperatorPrecedence(parentKind))
+            if (CSharpAnalysis.GetOperatorPrecedence(expression) > CSharpAnalysis.GetOperatorPrecedence(parentKind))
             {
                 return expression.Parenthesize(moveTrivia: true);
             }
@@ -1340,6 +1351,19 @@ namespace Roslynator.CSharp
                 SyntaxFactory.VariableDeclaration(
                     type,
                     SingletonSeparatedList(declarator)));
+        }
+
+        public static EnumMemberDeclarationSyntax EnumMemberDeclaration(string name, ExpressionSyntax value)
+        {
+            return EnumMemberDeclaration(Identifier(name), value);
+        }
+
+        public static EnumMemberDeclarationSyntax EnumMemberDeclaration(SyntaxToken identifier, ExpressionSyntax value)
+        {
+            return SyntaxFactory.EnumMemberDeclaration(
+                default(SyntaxList<AttributeListSyntax>),
+                identifier,
+                EqualsValueClause(value));
         }
     }
 }

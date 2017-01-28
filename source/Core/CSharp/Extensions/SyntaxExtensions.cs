@@ -106,6 +106,18 @@ namespace Roslynator.CSharp.Extensions
             return block.WithStatements(default(SyntaxList<StatementSyntax>));
         }
 
+        public static StatementSyntax SingleStatementOrDefault(this BlockSyntax body)
+        {
+            if (body == null)
+                throw new ArgumentNullException(nameof(body));
+
+            SyntaxList<StatementSyntax> statements = body.Statements;
+
+            return (statements.Count == 1)
+                ? statements.First()
+                : null;
+        }
+
         public static ClassDeclarationSyntax WithMembers(
             this ClassDeclarationSyntax classDeclaration,
             IEnumerable<MemberDeclarationSyntax> memberDeclarations)
@@ -246,7 +258,43 @@ namespace Roslynator.CSharp.Extensions
                     ?? operatorDeclaration.OperatorKeyword.Span.End);
         }
 
-        public static IEnumerable<XmlElementSyntax> Exceptions(this DocumentationCommentTriviaSyntax documentationComment)
+        public static XmlElementSyntax SummaryElement(this DocumentationCommentTriviaSyntax documentationComment)
+        {
+            if (documentationComment == null)
+                throw new ArgumentNullException(nameof(documentationComment));
+
+            foreach (XmlNodeSyntax node in documentationComment.Content)
+            {
+                if (node.IsKind(SyntaxKind.XmlElement))
+                {
+                    var element = (XmlElementSyntax)node;
+
+                    string name = element.StartTag?.Name?.LocalName.ValueText;
+
+                    if (string.Equals(name, "summary", StringComparison.Ordinal))
+                        return element;
+                }
+            }
+
+            return null;
+        }
+
+        public static IEnumerable<XmlElementSyntax> ExceptionElements(this DocumentationCommentTriviaSyntax documentationComment)
+        {
+            return Elements(documentationComment, "exception");
+        }
+
+        public static IEnumerable<XmlElementSyntax> ParamElements(this DocumentationCommentTriviaSyntax documentationComment)
+        {
+            return Elements(documentationComment, "param");
+        }
+
+        public static IEnumerable<XmlElementSyntax> TypeParamElements(this DocumentationCommentTriviaSyntax documentationComment)
+        {
+            return Elements(documentationComment, "typeparam");
+        }
+
+        public static IEnumerable<XmlElementSyntax> Elements(this DocumentationCommentTriviaSyntax documentationComment, string localName)
         {
             if (documentationComment == null)
                 throw new ArgumentNullException(nameof(documentationComment));
@@ -257,10 +305,10 @@ namespace Roslynator.CSharp.Extensions
                 {
                     var xmlElement = (XmlElementSyntax)node;
 
-                    XmlNameSyntax name = xmlElement.StartTag?.Name;
+                    XmlNameSyntax xmlName = xmlElement.StartTag?.Name;
 
-                    if (name != null
-                        && string.Equals(name.LocalName.ValueText, "exception", StringComparison.Ordinal))
+                    if (xmlName != null
+                        && string.Equals(xmlName.LocalName.ValueText, localName, StringComparison.Ordinal))
                     {
                         yield return xmlElement;
                     }
@@ -1009,6 +1057,28 @@ namespace Roslynator.CSharp.Extensions
         public static SyntaxList<TNode> ReplaceAt<TNode>(this SyntaxList<TNode> list, int index, TNode newNode) where TNode : SyntaxNode
         {
             return list.Replace(list[index], newNode);
+        }
+
+        public static bool IsFirst<TNode>(this SyntaxList<TNode> list, TNode node) where TNode : SyntaxNode
+        {
+            return list.IndexOf(node) == 0;
+        }
+
+        public static bool IsLast<TNode>(this SyntaxList<TNode> list, TNode node) where TNode : SyntaxNode
+        {
+            return list.Any()
+                && list.IndexOf(node) == list.Count - 1;
+        }
+
+        public static bool IsFirst<TNode>(this SeparatedSyntaxList<TNode> list, TNode node) where TNode : SyntaxNode
+        {
+            return list.IndexOf(node) == 0;
+        }
+
+        public static bool IsLast<TNode>(this SeparatedSyntaxList<TNode> list, TNode node) where TNode : SyntaxNode
+        {
+            return list.Any()
+                && list.IndexOf(node) == list.Count - 1;
         }
 
         public static SeparatedSyntaxList<TNode> ReplaceAt<TNode>(this SeparatedSyntaxList<TNode> list, int index, TNode newNode) where TNode : SyntaxNode

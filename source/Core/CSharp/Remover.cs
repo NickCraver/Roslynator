@@ -19,7 +19,7 @@ namespace Roslynator.CSharp
 {
     public static class Remover
     {
-        public static SyntaxRemoveOptions DefaultMemberRemoveOptions
+        public static SyntaxRemoveOptions DefaultRemoveOptions
         {
             get { return SyntaxRemoveOptions.KeepExteriorTrivia | SyntaxRemoveOptions.KeepUnbalancedDirectives; }
         }
@@ -51,7 +51,7 @@ namespace Roslynator.CSharp
                 }
                 else
                 {
-                    return await document.RemoveNodeAsync(member, DefaultMemberRemoveOptions).ConfigureAwait(false);
+                    return await document.RemoveNodeAsync(member, DefaultRemoveOptions).ConfigureAwait(false);
                 }
             }
         }
@@ -129,7 +129,7 @@ namespace Roslynator.CSharp
                 .WithMembers(classDeclaration.Members.Replace(member, newMember));
 
             return classDeclaration
-                .RemoveNode(classDeclaration.Members[index], GetMemberRemoveOptions(newMember));
+                .RemoveNode(classDeclaration.Members[index], GetRemoveOptions(newMember));
         }
 
         public static MemberDeclarationSyntax RemoveMemberAt(this InterfaceDeclarationSyntax interfaceDeclaration, int index)
@@ -162,7 +162,7 @@ namespace Roslynator.CSharp
                 .WithMembers(interfaceDeclaration.Members.Replace(member, newMember));
 
             return interfaceDeclaration
-                .RemoveNode(interfaceDeclaration.Members[index], GetMemberRemoveOptions(newMember));
+                .RemoveNode(interfaceDeclaration.Members[index], GetRemoveOptions(newMember));
         }
 
         public static MemberDeclarationSyntax RemoveMemberAt(this StructDeclarationSyntax structDeclaration, int index)
@@ -195,7 +195,7 @@ namespace Roslynator.CSharp
                 .WithMembers(structDeclaration.Members.Replace(member, newMember));
 
             return structDeclaration
-                .RemoveNode(structDeclaration.Members[index], GetMemberRemoveOptions(newMember));
+                .RemoveNode(structDeclaration.Members[index], GetRemoveOptions(newMember));
         }
 
         public static CompilationUnitSyntax RemoveMemberAt(this CompilationUnitSyntax compilationUnit, int index)
@@ -228,7 +228,7 @@ namespace Roslynator.CSharp
                 .WithMembers(compilationUnit.Members.Replace(member, newMember));
 
             return compilationUnit
-                .RemoveNode(compilationUnit.Members[index], GetMemberRemoveOptions(newMember));
+                .RemoveNode(compilationUnit.Members[index], GetRemoveOptions(newMember));
         }
 
         public static MemberDeclarationSyntax RemoveMemberAt(this NamespaceDeclarationSyntax namespaceDeclaration, int index)
@@ -261,7 +261,7 @@ namespace Roslynator.CSharp
                 .WithMembers(namespaceDeclaration.Members.Replace(member, newMember));
 
             return namespaceDeclaration
-                .RemoveNode(namespaceDeclaration.Members[index], GetMemberRemoveOptions(newMember));
+                .RemoveNode(namespaceDeclaration.Members[index], GetRemoveOptions(newMember));
         }
 
         internal static MemberDeclarationSyntax RemoveSingleLineDocumentationComment(MemberDeclarationSyntax member)
@@ -291,6 +291,17 @@ namespace Roslynator.CSharp
             }
 
             return member;
+        }
+
+        public static TNode RemoveStatement<TNode>(TNode node, StatementSyntax statement) where TNode : SyntaxNode
+        {
+            if (node == null)
+                throw new ArgumentNullException(nameof(node));
+
+            if (statement == null)
+                throw new ArgumentNullException(nameof(statement));
+
+            return node.RemoveNode(statement, GetRemoveOptions(statement));
         }
 
         public static Task<Document> RemoveCommentAsync(
@@ -603,9 +614,9 @@ namespace Roslynator.CSharp
             return node.RemoveNodes(emptyNamespaces, removeOptions);
         }
 
-        private static SyntaxRemoveOptions GetMemberRemoveOptions(MemberDeclarationSyntax member)
+        private static SyntaxRemoveOptions GetRemoveOptions(CSharpSyntaxNode member)
         {
-            SyntaxRemoveOptions removeOptions = DefaultMemberRemoveOptions;
+            SyntaxRemoveOptions removeOptions = DefaultRemoveOptions;
 
             if (member.GetLeadingTrivia().All(f => f.IsWhitespaceOrEndOfLineTrivia()))
                 removeOptions &= ~SyntaxRemoveOptions.KeepLeadingTrivia;

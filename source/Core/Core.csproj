@@ -45,6 +45,8 @@
     <Compile Include="CSharp\Analysis\BracesAnalysisResult.cs" />
     <Compile Include="CSharp\Analysis\CSharpAnalysis.cs" />
     <Compile Include="CSharp\CSharpErrorCodes.cs" />
+    <Compile Include="CSharp\DocumentationCommentGenerator.cs" />
+    <Compile Include="CSharp\DocumentationCommentGeneratorSettings.cs" />
     <Compile Include="CSharp\EmbeddedStatement.cs" />
     <Compile Include="CSharp\Extensions\CSharpExtensions.cs" />
     <Compile Include="CSharp\CSharpGeneratedCodeAnalyzer.cs" />
@@ -59,6 +61,11 @@
     <Compile Include="CSharp\Inserter.cs" />
     <Compile Include="CSharp\Negator.cs" />
     <Compile Include="CSharp\Refactorings\AddBracesToSwitchSectionRefactoring.cs" />
+    <Compile Include="CSharp\Refactorings\AddExceptionToDocumentationComment\AddExceptionToDocumentationCommentAnalysis.cs" />
+    <Compile Include="CSharp\Refactorings\AddExceptionToDocumentationComment\AddExceptionToDocumentationCommentRefactoring.cs" />
+    <Compile Include="CSharp\Refactorings\AddExceptionToDocumentationComment\ThrowExpressionInfo.cs" />
+    <Compile Include="CSharp\Refactorings\AddExceptionToDocumentationComment\ThrowInfo.cs" />
+    <Compile Include="CSharp\Refactorings\AddExceptionToDocumentationComment\ThrowStatementInfo.cs" />
     <Compile Include="CSharp\Refactorings\InsertModifierRefactoring.cs" />
     <Compile Include="CSharp\Refactorings\ExpandExpressionBodyRefactoring.cs" />
     <Compile Include="CSharp\Refactorings\ExtractTypeDeclarationToNewDocumentRefactoring.cs" />
@@ -89,7 +96,6 @@
     <Compile Include="CSharp\Refactorings\UseExpressionBodiedMemberRefactoring.cs" />
     <Compile Include="DirectiveRemoveOptions.cs" />
     <Compile Include="Symbol.cs" />
-    <Compile Include="CSharp\CSharpUtility.cs" />
     <Compile Include="CSharp\SyntaxRewriters\CommentRemover.cs" />
     <Compile Include="CSharp\Refactorings\InlineAliasExpressionRefactoring.cs" />
     <Compile Include="CSharp\SyntaxRewriters\WhitespaceOrEndOfLineRemover.cs" />

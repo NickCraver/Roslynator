@@ -1170,7 +1170,7 @@ namespace Roslynator.CSharp
             title: "Inline local variable.",
             messageFormat: "Inline local variable.",
             category: DiagnosticCategories.Simplification,
-            defaultSeverity: DiagnosticSeverity.Info,
+            defaultSeverity: DiagnosticSeverity.Hidden,
             isEnabledByDefault: true
         );
 
@@ -1224,6 +1224,127 @@ namespace Roslynator.CSharp
             defaultSeverity: DiagnosticSeverity.Hidden,
             isEnabledByDefault: true,
             customTags: WellKnownDiagnosticTags.Unnecessary
+        );
+
+        public static readonly DiagnosticDescriptor BitwiseOperationOnEnumWithoutFlagsAttribute = new DiagnosticDescriptor(
+            id: DiagnosticIdentifiers.BitwiseOperationOnEnumWithoutFlagsAttribute,
+            title: "Bitwise operation on enum without Flags attribute.",
+            messageFormat: "Bitwise operation on enum without Flags attribute.",
+            category: DiagnosticCategories.General,
+            defaultSeverity: DiagnosticSeverity.Info,
+            isEnabledByDefault: true
+        );
+
+        public static readonly DiagnosticDescriptor ReplaceReturnWithYieldReturn = new DiagnosticDescriptor(
+            id: DiagnosticIdentifiers.ReplaceReturnWithYieldReturn,
+            title: "Replace return with yield return.",
+            messageFormat: "Replace return with yield return.",
+            category: DiagnosticCategories.ErrorFix,
+            defaultSeverity: DiagnosticSeverity.Hidden,
+            isEnabledByDefault: true
+        );
+
+        public static readonly DiagnosticDescriptor RemoveRedundantOverridenMember = new DiagnosticDescriptor(
+            id: DiagnosticIdentifiers.RemoveRedundantOverridenMember,
+            title: "Remove redundant overriden member.",
+            messageFormat: "Remove redundant overriden {0}.",
+            category: DiagnosticCategories.Redundancy,
+            defaultSeverity: DiagnosticSeverity.Info,
+            isEnabledByDefault: true,
+            customTags: WellKnownDiagnosticTags.Unnecessary
+        );
+
+        public static readonly DiagnosticDescriptor RemoveRedundantDisposeOrCloseCall = new DiagnosticDescriptor(
+            id: DiagnosticIdentifiers.RemoveRedundantDisposeOrCloseCall,
+            title: "Remove redundant Dispose/Close call.",
+            messageFormat: "Remove redundant '{0}' call.",
+            category: DiagnosticCategories.Redundancy,
+            defaultSeverity: DiagnosticSeverity.Hidden,
+            isEnabledByDefault: true,
+            customTags: WellKnownDiagnosticTags.Unnecessary
+        );
+
+        public static readonly DiagnosticDescriptor RemoveRedundantContinueStatement = new DiagnosticDescriptor(
+            id: DiagnosticIdentifiers.RemoveRedundantContinueStatement,
+            title: "Remove redundant continue statement.",
+            messageFormat: "Remove redundant continue statement.",
+            category: DiagnosticCategories.Redundancy,
+            defaultSeverity: DiagnosticSeverity.Hidden,
+            isEnabledByDefault: true,
+            customTags: WellKnownDiagnosticTags.Unnecessary
+        );
+
+        public static readonly DiagnosticDescriptor DeclareEnumMemberWithZeroValue = new DiagnosticDescriptor(
+            id: DiagnosticIdentifiers.DeclareEnumMemberWithZeroValue,
+            title: "Declare enum member with zero value (when enum has FlagsAttribute).",
+            messageFormat: "Declare enum member with zero value (when enum has FlagsAttribute).",
+            category: DiagnosticCategories.Design,
+            defaultSeverity: DiagnosticSeverity.Info,
+            isEnabledByDefault: true
+        );
+
+        public static readonly DiagnosticDescriptor MergeSwitchSectionsWithEquivalentContent = new DiagnosticDescriptor(
+            id: DiagnosticIdentifiers.MergeSwitchSectionsWithEquivalentContent,
+            title: "Merge switch sections with equivalent content.",
+            messageFormat: "Merge switch sections with equivalent content.",
+            category: DiagnosticCategories.Simplification,
+            defaultSeverity: DiagnosticSeverity.Hidden,
+            isEnabledByDefault: true,
+            customTags: WellKnownDiagnosticTags.Unnecessary
+        );
+
+        public static readonly DiagnosticDescriptor AddDocumentationComment = new DiagnosticDescriptor(
+            id: DiagnosticIdentifiers.AddDocumentationComment,
+            title: "Add documentation comment to publicly visible type or member.",
+            messageFormat: "Add documentation comment to publicly visible type or member.",
+            category: DiagnosticCategories.Maintainability,
+            defaultSeverity: DiagnosticSeverity.Hidden,
+            isEnabledByDefault: true
+        );
+
+        public static readonly DiagnosticDescriptor AddSummaryToDocumentationComment = new DiagnosticDescriptor(
+            id: DiagnosticIdentifiers.AddSummaryToDocumentationComment,
+            title: "Add summary to documentation comment.",
+            messageFormat: "Add summary to documentation comment.",
+            category: DiagnosticCategories.Maintainability,
+            defaultSeverity: DiagnosticSeverity.Warning,
+            isEnabledByDefault: true
+        );
+
+        public static readonly DiagnosticDescriptor AddSummaryElementToDocumentationComment = new DiagnosticDescriptor(
+            id: DiagnosticIdentifiers.AddSummaryElementToDocumentationComment,
+            title: "Add summary element to documentation comment.",
+            messageFormat: "Add summary element to documentation comment.",
+            category: DiagnosticCategories.Maintainability,
+            defaultSeverity: DiagnosticSeverity.Warning,
+            isEnabledByDefault: true
+        );
+
+        public static readonly DiagnosticDescriptor AddExceptionToDocumentationComment = new DiagnosticDescriptor(
+            id: DiagnosticIdentifiers.AddExceptionToDocumentationComment,
+            title: "Add exception to documentation comment.",
+            messageFormat: "Add exception to documentation comment.",
+            category: DiagnosticCategories.Maintainability,
+            defaultSeverity: DiagnosticSeverity.Info,
+            isEnabledByDefault: true
+        );
+
+        public static readonly DiagnosticDescriptor AddParameterToDocumentationComment = new DiagnosticDescriptor(
+            id: DiagnosticIdentifiers.AddParameterToDocumentationComment,
+            title: "Add parameter to documentation comment.",
+            messageFormat: "Add parameter to documentation comment.",
+            category: DiagnosticCategories.Maintainability,
+            defaultSeverity: DiagnosticSeverity.Info,
+            isEnabledByDefault: true
+        );
+
+        public static readonly DiagnosticDescriptor AddTypeParameterToDocumentationComment = new DiagnosticDescriptor(
+            id: DiagnosticIdentifiers.AddTypeParameterToDocumentationComment,
+            title: "Add type parameter to documentation comment.",
+            messageFormat: "Add type parameter to documentation comment.",
+            category: DiagnosticCategories.Maintainability,
+            defaultSeverity: DiagnosticSeverity.Info,
+            isEnabledByDefault: true
         );
     }
 }

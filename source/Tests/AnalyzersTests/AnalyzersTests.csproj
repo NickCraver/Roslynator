@@ -25,6 +25,8 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <CodeAnalysisRuleSet>..\AnalyzersTests.ruleset</CodeAnalysisRuleSet>
+    <DocumentationFile>
+    </DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -41,11 +43,18 @@
   <ItemGroup>
     <Compile Include="AddBraces.cs" />
     <Compile Include="AddBracesToSwitchSectionWithMultipleStatements.cs" />
+    <Compile Include="AddDocumentationComment.cs" />
     <Compile Include="AddEmptyLineAfterEmbeddedStatement.cs" />
     <Compile Include="AddBreakStatementToSwitchSection.cs" />
     <Compile Include="AddEmptyLineAfterLastStatementInDoStatement.cs" />
+    <Compile Include="AddExceptionToDocumentationComment.cs" />
     <Compile Include="AddMissingSemicolon.cs" />
+    <Compile Include="BitwiseOperationOnEnumWithoutFlagsAttribute.cs" />
+    <Compile Include="AddParameterToDocumentationComment.cs" />
     <Compile Include="AddParentheses.cs" />
+    <Compile Include="AddSummaryElementToDocumentationComment.cs" />
+    <Compile Include="AddSummaryToDocumentationComment.cs" />
+    <Compile Include="AddTypeParameterToDocumentationComment.cs" />
     <Compile Include="AsynchronousMethodNameShouldEndWithAsync.cs" />
     <Compile Include="AddReturnStatementThatReturnsDefaultValue.cs" />
     <Compile Include="AvoidEmbeddedStatement.cs" />
@@ -53,6 +62,7 @@
     <Compile Include="AvoidUsageOfWhileStatementToCreateInfiniteLoop.cs" />
     <Compile Include="CallFindMethodInsteadOfFirstOrDefaultMethod.cs" />
     <Compile Include="CombineEnumerableWhereMethodChain.cs" />
+    <Compile Include="DeclareEnumMemberWithZeroValue.cs" />
     <Compile Include="DeclareTypeInsideNamespace.cs" />
     <Compile Include="AvoidUsageOfForStatementToCreateInfiniteLoop.cs" />
     <Compile Include="AddStaticModifierToAllPartialClassDeclarations.cs" />
@@ -75,6 +85,7 @@
     <Compile Include="FormatDocumentationSummary\FormatDocumentationSummaryOnSingleLine.cs" />
     <Compile Include="MergeLocalDeclarationWithInitialization.cs" />
     <Compile Include="MergeLocalDeclarationWithReturnStatement.cs" />
+    <Compile Include="MergeSwitchSectionsWithEquivalentContent.cs" />
     <Compile Include="RemoveBraces.cs" />
     <Compile Include="RemoveEmptyDestructor.cs" />
     <Compile Include="RemoveEmptyRegion.cs" />
@@ -82,9 +93,12 @@
     <Compile Include="RemoveRedundantBooleanLiteral.cs" />
     <Compile Include="RemoveRedundantBraces.cs" />
     <Compile Include="RemoveRedundantConstructor.cs" />
+    <Compile Include="RemoveRedundantContinueStatement.cs" />
     <Compile Include="RemoveRedundantDelegateCreation.cs" />
+    <Compile Include="RemoveRedundantDisposeOrCloseCall.cs" />
     <Compile Include="RemoveRedundantEmptyLine.cs" />
     <Compile Include="RemoveRedundantFieldInitialization.cs" />
+    <Compile Include="RemoveRedundantOverridenMember.cs" />
     <Compile Include="RemoveRedundantStringToCharArrayCall.cs" />
     <Compile Include="RemoveRedundantToStringCall.cs" />
     <Compile Include="RenamePrivateFieldAccordingToCamelCaseWithUnderscore.cs" />
@@ -93,6 +107,7 @@
     <Compile Include="ReplaceCountMethodWithCountOrLengthProperty.cs" />
     <Compile Include="ReplaceIfStatementWithReturnStatement.cs" />
     <Compile Include="ReplaceReturnStatementWithExpressionStatement.cs" />
+    <Compile Include="ReplaceReturnWithYieldReturn.cs" />
     <Compile Include="UseElementAccessInsteadOfElementAt.cs" />
     <Compile Include="Tuple.cs" />
     <Compile Include="UseCoalesceExpression.cs" />

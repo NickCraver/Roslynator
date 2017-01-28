@@ -135,5 +135,18 @@ namespace Roslynator.CSharp
         public const string MergeLocalDeclarationWithInitialization = Prefix + "1127";
         public const string UseCoalesceExpression = Prefix + "1128";
         public const string RemoveRedundantFieldInitialization = Prefix + "1129";
+        public const string BitwiseOperationOnEnumWithoutFlagsAttribute = Prefix + "1130";
+        public const string ReplaceReturnWithYieldReturn = Prefix + "1131";
+        public const string RemoveRedundantOverridenMember = Prefix + "1132";
+        public const string RemoveRedundantDisposeOrCloseCall = Prefix + "1133";
+        public const string RemoveRedundantContinueStatement = Prefix + "1134";
+        public const string DeclareEnumMemberWithZeroValue = Prefix + "1135";
+        public const string MergeSwitchSectionsWithEquivalentContent = Prefix + "1136";
+        public const string AddDocumentationComment = Prefix + "1137";
+        public const string AddSummaryToDocumentationComment = Prefix + "1138";
+        public const string AddSummaryElementToDocumentationComment = Prefix + "1139";
+        public const string AddExceptionToDocumentationComment = Prefix + "1140";
+        public const string AddParameterToDocumentationComment = Prefix + "1141";
+        public const string AddTypeParameterToDocumentationComment = Prefix + "1142";
     }
 }
