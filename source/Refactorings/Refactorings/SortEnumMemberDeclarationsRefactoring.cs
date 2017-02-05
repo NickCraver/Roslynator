@@ -82,8 +82,6 @@ namespace Roslynator.CSharp.Refactorings
             List<object> values,
             CancellationToken cancellationToken)
         {
-            var comparer = new EnumMemberValueComparer();
-
             SeparatedSyntaxList<EnumMemberDeclarationSyntax> members = enumDeclaration.Members;
 
             int firstIndex = members.IndexOf(selectedMembers[0]);
@@ -91,7 +89,7 @@ namespace Roslynator.CSharp.Refactorings
 
             IEnumerable<EnumMemberDeclarationSyntax> sorted = selectedMembers
                 .Zip(values, (f, g) => new { EnumMember = f, Value = g })
-                .OrderBy(f => f.Value, comparer)
+                .OrderBy(f => f.Value, EnumMemberValueComparer.Instance)
                 .Select(f => f.EnumMember);
 
             SeparatedSyntaxList<EnumMemberDeclarationSyntax> newMembers = members
