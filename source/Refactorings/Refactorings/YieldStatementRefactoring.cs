@@ -23,10 +23,17 @@ namespace Roslynator.CSharp.Refactorings
             {
                 SemanticModel semanticModel = await context.GetSemanticModelAsync().ConfigureAwait(false);
 
-                MemberDeclarationSyntax containingMember = await ReturnExpressionRefactoring.GetContainingMethodOrPropertyOrIndexerAsync(yieldStatement.Expression, semanticModel, context.CancellationToken).ConfigureAwait(false);
+                ISymbol memberSymbol = ReturnExpressionRefactoring.GetContainingMethodOrPropertySymbol(yieldStatement.Expression, semanticModel, context.CancellationToken);
 
-                if (containingMember != null)
+                if (memberSymbol != null)
                 {
+                    SyntaxNode node = await memberSymbol
+                        .DeclaringSyntaxReferences[0]
+                        .GetSyntaxAsync(context.CancellationToken)
+                        .ConfigureAwait(false);
+
+                    var containingMember = node as MemberDeclarationSyntax;
+
                     TypeSyntax memberType = ReturnExpressionRefactoring.GetMemberType(containingMember);
 
                     if (memberType != null)
@@ -40,6 +47,7 @@ namespace Roslynator.CSharp.Refactorings
                             if (context.IsRefactoringEnabled(RefactoringIdentifiers.ChangeMemberTypeAccordingToYieldReturnExpression)
                                 && typeSymbol?.IsErrorType() == false
                                 && !typeSymbol.IsVoid()
+                                && !memberSymbol.IsOverride
                                 && (memberTypeSymbol == null
                                     || memberTypeSymbol.IsErrorType()
                                     || !memberTypeSymbol.IsConstructedFromIEnumerableOfT()
@@ -50,10 +58,10 @@ namespace Roslynator.CSharp.Refactorings
                                     .GetSpecialType(SpecialType.System_Collections_Generic_IEnumerable_T)
                                     .Construct(typeSymbol);
 
-                                TypeSyntax newType = CSharpFactory.Type(newTypeSymbol, semanticModel, memberType.SpanStart);
+                                TypeSyntax newType = newTypeSymbol.ToMinimalSyntax(semanticModel, memberType.SpanStart);
 
                                 context.RegisterRefactoring(
-                                    $"Change {ReturnExpressionRefactoring.GetText(containingMember)} type to '{SymbolDisplay.GetMinimalDisplayString(newTypeSymbol, memberType.SpanStart, semanticModel)}'",
+                                    $"Change {ReturnExpressionRefactoring.GetText(containingMember)} type to '{SymbolDisplay.GetMinimalString(newTypeSymbol, semanticModel, memberType.SpanStart)}'",
                                     cancellationToken =>
                                     {
                                         return ChangeTypeRefactoring.ChangeTypeAsync(

@@ -314,10 +314,9 @@ namespace Roslynator.CSharp
             messageFormat: "Remove redundant boolean literal.",
             category: DiagnosticCategories.Redundancy,
             defaultSeverity: DiagnosticSeverity.Info,
-            isEnabledByDefault: true
+            isEnabledByDefault: true,
+            customTags: WellKnownDiagnosticTags.Unnecessary
         );
-
-        public static readonly DiagnosticDescriptor RemoveRedundantBooleanLiteralFadeOut = RemoveRedundantBooleanLiteral.CreateFadeOut();
 
         public static readonly DiagnosticDescriptor RemoveRedundantSealedModifier = new DiagnosticDescriptor(
             id: DiagnosticIdentifiers.RemoveRedundantSealedModifier,
@@ -1153,7 +1152,7 @@ namespace Roslynator.CSharp
             messageFormat: "Add missing semicolon.",
             category: DiagnosticCategories.ErrorFix,
             defaultSeverity: DiagnosticSeverity.Hidden,
-            isEnabledByDefault: true
+            isEnabledByDefault: false
         );
 
         public static readonly DiagnosticDescriptor AddParenthesesAccordingToOperatorPrecedence = new DiagnosticDescriptor(
@@ -1214,8 +1213,6 @@ namespace Roslynator.CSharp
             isEnabledByDefault: true
         );
 
-        public static readonly DiagnosticDescriptor UseCoalesceExpressionFadeOut = UseCoalesceExpression.CreateFadeOut();
-
         public static readonly DiagnosticDescriptor RemoveRedundantFieldInitialization = new DiagnosticDescriptor(
             id: DiagnosticIdentifiers.RemoveRedundantFieldInitialization,
             title: "Remove redundant field initalization.",
@@ -1244,10 +1241,10 @@ namespace Roslynator.CSharp
             isEnabledByDefault: true
         );
 
-        public static readonly DiagnosticDescriptor RemoveRedundantOverridenMember = new DiagnosticDescriptor(
-            id: DiagnosticIdentifiers.RemoveRedundantOverridenMember,
-            title: "Remove redundant overriden member.",
-            messageFormat: "Remove redundant overriden {0}.",
+        public static readonly DiagnosticDescriptor RemoveRedundantOverridingMember = new DiagnosticDescriptor(
+            id: DiagnosticIdentifiers.RemoveRedundantOverridingMember,
+            title: "Remove redundant overriding member.",
+            messageFormat: "Remove redundant overriding {0}.",
             category: DiagnosticCategories.Redundancy,
             defaultSeverity: DiagnosticSeverity.Info,
             isEnabledByDefault: true,
@@ -1345,6 +1342,111 @@ namespace Roslynator.CSharp
             category: DiagnosticCategories.Maintainability,
             defaultSeverity: DiagnosticSeverity.Info,
             isEnabledByDefault: true
+        );
+
+        public static readonly DiagnosticDescriptor SimplifyCoalesceExpression = new DiagnosticDescriptor(
+            id: DiagnosticIdentifiers.SimplifyCoalesceExpression,
+            title: "Simplify coalesce expression.",
+            messageFormat: "Simplify coalesce expression.",
+            category: DiagnosticCategories.Simplification,
+            defaultSeverity: DiagnosticSeverity.Hidden,
+            isEnabledByDefault: true,
+            customTags: WellKnownDiagnosticTags.Unnecessary
+        );
+
+        public static readonly DiagnosticDescriptor MarkContainingClassAsAbstract = new DiagnosticDescriptor(
+            id: DiagnosticIdentifiers.MarkContainingClassAsAbstract,
+            title: "Mark containing class as abstract.",
+            messageFormat: "Mark containing class as abstract.",
+            category: DiagnosticCategories.ErrorFix,
+            defaultSeverity: DiagnosticSeverity.Hidden,
+            isEnabledByDefault: true
+        );
+
+        public static readonly DiagnosticDescriptor RemoveRedundantAsOperator = new DiagnosticDescriptor(
+            id: DiagnosticIdentifiers.RemoveRedundantAsOperator,
+            title: "Remove redundant 'as' operator.",
+            messageFormat: "Remove redundant 'as' operator.",
+            category: DiagnosticCategories.Redundancy,
+            defaultSeverity: DiagnosticSeverity.Hidden,
+            isEnabledByDefault: true,
+            customTags: WellKnownDiagnosticTags.Unnecessary
+        );
+
+        public static readonly DiagnosticDescriptor UseConditionalAccess = new DiagnosticDescriptor(
+            id: DiagnosticIdentifiers.UseConditionalAccess,
+            title: "Use conditional access.",
+            messageFormat: "Use conditional access.",
+            category: DiagnosticCategories.Usage,
+            defaultSeverity: DiagnosticSeverity.Info,
+            isEnabledByDefault: true
+        );
+
+        public static readonly DiagnosticDescriptor RemoveInapplicableModifier = new DiagnosticDescriptor(
+            id: DiagnosticIdentifiers.RemoveInapplicableModifier,
+            title: "Remove inapplicable modifier.",
+            messageFormat: "Remove inapplicable modifier.",
+            category: DiagnosticCategories.ErrorFix,
+            defaultSeverity: DiagnosticSeverity.Hidden,
+            isEnabledByDefault: true,
+            customTags: WellKnownDiagnosticTags.Unnecessary
+        );
+
+        public static readonly DiagnosticDescriptor RemoveUnreachableCode = new DiagnosticDescriptor(
+            id: DiagnosticIdentifiers.RemoveUnreachableCode,
+            title: "Remove unreachable code.",
+            messageFormat: "Remove unreachable code.",
+            category: DiagnosticCategories.General,
+            defaultSeverity: DiagnosticSeverity.Hidden,
+            isEnabledByDefault: true,
+            customTags: WellKnownDiagnosticTags.Unnecessary
+        );
+
+        public static readonly DiagnosticDescriptor RemoveImplementationFromAbstractMember = new DiagnosticDescriptor(
+            id: DiagnosticIdentifiers.RemoveImplementationFromAbstractMember,
+            title: "Remove implementation from abstract member.",
+            messageFormat: "Remove implementation from {0}.",
+            category: DiagnosticCategories.ErrorFix,
+            defaultSeverity: DiagnosticSeverity.Hidden,
+            isEnabledByDefault: true,
+            customTags: WellKnownDiagnosticTags.Unnecessary
+        );
+
+        public static readonly DiagnosticDescriptor CallStringConcatInsteadOfStringJoin = new DiagnosticDescriptor(
+            id: DiagnosticIdentifiers.CallStringConcatInsteadOfStringJoin,
+            title: "Call string.Concat instead of string.Join.",
+            messageFormat: "Call string.Concat instead of string.Join.",
+            category: DiagnosticCategories.Simplification,
+            defaultSeverity: DiagnosticSeverity.Info,
+            isEnabledByDefault: true
+        );
+
+        public static readonly DiagnosticDescriptor RemoveRedundantCast = new DiagnosticDescriptor(
+            id: DiagnosticIdentifiers.RemoveRedundantCast,
+            title: "Remove redundant cast.",
+            messageFormat: "Remove redundant cast.",
+            category: DiagnosticCategories.Redundancy,
+            defaultSeverity: DiagnosticSeverity.Hidden,
+            isEnabledByDefault: true,
+            customTags: WellKnownDiagnosticTags.Unnecessary
+        );
+
+        public static readonly DiagnosticDescriptor MemberTypeMustMatchOverriddenMemberType = new DiagnosticDescriptor(
+            id: DiagnosticIdentifiers.MemberTypeMustMatchOverriddenMemberType,
+            title: "Member type must match overriden member type.",
+            messageFormat: "Member type must match overriden member type.",
+            category: DiagnosticCategories.ErrorFix,
+            defaultSeverity: DiagnosticSeverity.Hidden,
+            isEnabledByDefault: true
+        );
+
+        public static readonly DiagnosticDescriptor AddEmptyLineAfterClosingBrace = new DiagnosticDescriptor(
+            id: DiagnosticIdentifiers.AddEmptyLineAfterClosingBrace,
+            title: "Add empty line after closing brace.",
+            messageFormat: "Consider adding empty line after closing brace.",
+            category: DiagnosticCategories.Formatting,
+            defaultSeverity: DiagnosticSeverity.Info,
+            isEnabledByDefault: false
         );
     }
 }

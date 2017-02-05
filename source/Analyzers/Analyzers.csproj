@@ -44,8 +44,14 @@
     <AssemblyOriginatorKeyFile>Roslynator.CSharp.Analyzers.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="CodeFixProviders\AddEmptyLineAfterClosingBraceCodeFixProvider.cs" />
     <Compile Include="CodeFixProviders\AddParenthesesCodeFixProvider.cs" />
     <Compile Include="CodeFixProviders\ParameterCodeFixProvider.cs" />
+    <Compile Include="CodeFixProviders\RemoveInapplicableModifierCodeFixProvider.cs" />
+    <Compile Include="CodeFixProviders\RemoveRedundantCastCodeFixProvider.cs" />
+    <Compile Include="CodeFixProviders\RemoveImplementationFromAbstractMemberCodeFixProvider.cs" />
+    <Compile Include="CodeFixProviders\RemoveUnreachableCodeCodeFixProvider.cs" />
+    <Compile Include="CodeFixProviders\ThrowingOfNewNotImplementedExceptionCodeFixProvider.cs" />
     <Compile Include="CodeFixProviders\TypeParameterCodeFixProvider.cs" />
     <Compile Include="CodeFixProviders\DeclarationExpressionCodeFixProvider.cs" />
     <Compile Include="CodeFixProviders\AddMissingSemicolonCodeFixProvider.cs" />
@@ -56,6 +62,7 @@
     <Compile Include="CodeFixProviders\AddExceptionToDocumentationCommentCodeFixProvider.cs" />
     <Compile Include="CodeFixProviders\VariableDeclaratorCodeFixProvider.cs" />
     <Compile Include="DiagnosticAnalyzers\AddDocumentationCommentDiagnosticAnalyzer.cs" />
+    <Compile Include="DiagnosticAnalyzers\AddEmptyLineAfterClosingBraceDiagnosticAnalyzer.cs" />
     <Compile Include="DiagnosticAnalyzers\AddExceptionToDocumentationCommentDiagnosticAnalyzer.cs" />
     <Compile Include="DiagnosticAnalyzers\AddParameterToDocumentationCommentDiagnosticAnalyzer.cs" />
     <Compile Include="DiagnosticAnalyzers\AddSummaryToDocumentationCommentDiagnosticAnalyzer.cs" />
@@ -64,20 +71,35 @@
     <Compile Include="CodeFixProviders\LocalDeclarationStatementCodeFixProvider.cs" />
     <Compile Include="DiagnosticAnalyzers\AddMissingSemicolonDiagnosticAnalyzer.cs" />
     <Compile Include="DiagnosticAnalyzers\AddParenthesesDiagnosticAnalyzer.cs" />
+    <Compile Include="DiagnosticAnalyzers\SimplifyCoalesceExpressionDiagnosticAnalyzer.cs" />
+    <Compile Include="DiagnosticAnalyzers\MemberTypeMustMatchOverriddenMemberTypeDiagnosticAnalyzer.cs" />
+    <Compile Include="DiagnosticAnalyzers\RemoveRedundantCastDiagnosticAnalyzer.cs" />
+    <Compile Include="DiagnosticAnalyzers\RemoveImplementationFromAbstractMemberDiagnosticAnalyzer.cs" />
+    <Compile Include="DiagnosticAnalyzers\RemoveUnreachableCodeDiagnosticAnalyzer.cs" />
+    <Compile Include="DiagnosticAnalyzers\RemoveInapplicableModifierDiagnosticAnalyzer.cs" />
+    <Compile Include="DiagnosticAnalyzers\MarkContainingClassAsAbstractDiagnosticAnalyzer.cs" />
     <Compile Include="DiagnosticAnalyzers\ReplaceReturnWithYieldReturnDiagnosticAnalyzer.cs" />
+    <Compile Include="Refactorings\SimplifyCoalesceExpressionRefactoring.cs" />
+    <Compile Include="DiagnosticAnalyzers\CallStringConcatInsteadOfStringJoinDiagnosticAnalyzer.cs" />
+    <Compile Include="DiagnosticAnalyzers\UseConditionalAccessDiagnosticAnalyzer.cs" />
+    <Compile Include="DiagnosticAnalyzers\RemoveRedundantAsOperatorDiagnosticAnalyzer.cs" />
     <Compile Include="Refactorings\DocumentationComment\AddParameterToDocumentationCommentRefactoring.cs" />
     <Compile Include="Refactorings\AddDocumentationCommentRefactoring.cs" />
     <Compile Include="DiagnosticAnalyzers\MergeSwitchSectionsDiagnosticAnalyzer.cs" />
     <Compile Include="DiagnosticAnalyzers\DeclareEnumMemberWithZeroValueDiagnosticAnalyzer.cs" />
     <Compile Include="DiagnosticAnalyzers\RemoveRedundantContinueStatementDiagnosticAnalyzer.cs" />
     <Compile Include="DiagnosticAnalyzers\RemoveRedundantDisposeOrCloseCallDiagnosticAnalyzer.cs" />
-    <Compile Include="DiagnosticAnalyzers\RemoveRedundantOverridenMemberDiagnosticAnalyzer.cs" />
+    <Compile Include="DiagnosticAnalyzers\RemoveRedundantOverridingMemberDiagnosticAnalyzer.cs" />
     <Compile Include="Refactorings\AddParenthesesAccordingToOperatorPrecedenceRefactoring.cs" />
     <Compile Include="DiagnosticAnalyzers\DeclarationExpressionDiagnosticAnalyzer.cs" />
     <Compile Include="DiagnosticAnalyzers\InlineLocalVariableDiagnosticAnalyzer.cs" />
     <Compile Include="DiagnosticAnalyzers\MarkMemberAsStaticDiagnosticAnalyzer.cs" />
     <Compile Include="DiagnosticAnalyzers\MergeLocalDeclarationWithInitializationDiagnosticAnalyzer.cs" />
     <Compile Include="DiagnosticAnalyzers\RemoveRedundantFieldInitializationDiagnosticAnalyzer.cs" />
+    <Compile Include="Refactorings\RemoveRedundantAsOperatorRefactoring.cs" />
+    <Compile Include="Refactorings\MemberTypeMustMatchOverriddenMemberTypeRefactoring.cs" />
+    <Compile Include="Refactorings\RemoveRedundantCastRefactoring.cs" />
+    <Compile Include="Refactorings\RemoveImplementationFromAbstractMemberRefactoring.cs" />
     <Compile Include="Refactorings\RemoveRedundantDisposeOrCloseCallRefactoring.cs" />
     <Compile Include="Refactorings\MergeSwitchSectionsRefactoring.cs" />
     <Compile Include="Refactorings\DeclareEnumMemberWithZeroValueRefactoring.cs" />
@@ -95,7 +117,8 @@
     <Compile Include="Refactorings\InlineLocalVariableRefactoring.cs" />
     <Compile Include="DiagnosticAnalyzers\ThrowExpressionDiagnosticAnalyzer.cs" />
     <Compile Include="Refactorings\ReplaceReturnWithYieldReturnRefactoring.cs" />
-    <Compile Include="Refactorings\RemoveRedundantOverridenMemberRefactoring.cs" />
+    <Compile Include="Refactorings\RemoveRedundantOverridingMemberRefactoring.cs" />
+    <Compile Include="Refactorings\UseConditionalAccessRefactoring.cs" />
     <Compile Include="Refactorings\UseElementAccessInsteadOfElementAtRefactoring.cs" />
     <Compile Include="DiagnosticAnalyzers\UseCoalesceExpressionDiagnosticAnalyzer.cs" />
     <Compile Include="Refactorings\UseElementAccessInsteadOfFirstRefactoring.cs" />
@@ -200,6 +223,7 @@
     <Compile Include="Refactorings\UseLinefeedAsNewLineRefactoring.cs" />
     <Compile Include="Refactorings\UseNameOfOperatorRefactoring.cs" />
     <Compile Include="Refactorings\UsePredefinedTypeRefactoring.cs" />
+    <Compile Include="Refactorings\CallStringConcatInsteadOfStringJoinRefactoring.cs" />
     <Compile Include="Refactorings\UseStringIsNullOrEmptyMethodRefactoring.cs" />
     <Compile Include="Refactorings\ReplaceIfStatementWithAssignmentRefactoring.cs" />
     <Compile Include="Refactorings\SimplifyConditionalExpressionRefactoring.cs" />
@@ -305,7 +329,6 @@
     <Compile Include="Extensions\DiagnosticDescriptorExtensions.cs" />
     <Compile Include="Refactorings\AddBracesRefactoring.cs" />
     <Compile Include="Refactorings\ReplaceDoStatementWithWhileStatementRefactoring.cs" />
-    <Compile Include="Refactorings\RemoveModifierRefactoring.cs" />
     <Compile Include="Refactorings\RemoveRedundantBooleanLiteralRefactoring.cs" />
     <Compile Include="DiagnosticAnalyzers\AccessorListDiagnosticAnalyzer.cs" />
     <Compile Include="DiagnosticAnalyzers\AnonymousMethodDiagnosticAnalyzer.cs" />

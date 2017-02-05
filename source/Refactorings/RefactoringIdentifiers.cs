@@ -60,6 +60,9 @@ namespace Roslynator.CSharp.Refactorings
         public const string FormatInitializer = "FormatInitializer";
         public const string FormatParameterList = "FormatParameterList";
         public const string GenerateBaseConstructors = "GenerateBaseConstructors";
+        public const string GenerateCombinedEnumMember = "GenerateCombinedEnumMember";
+        public const string GenerateEnumMember = "GenerateEnumMember";
+        public const string GenerateEnumValues = "GenerateEnumValues";
         public const string GenerateEventInvokingMethod = "GenerateEventInvokingMethod";
         public const string GenerateSwitchSections = "GenerateSwitchSections";
         public const string InitializeLocalWithDefaultValue = "InitializeLocalWithDefaultValue";
@@ -157,8 +160,10 @@ namespace Roslynator.CSharp.Refactorings
         public const string ReplaceVerbatimStringLiteralWithRegularStringLiteral = "ReplaceVerbatimStringLiteralWithRegularStringLiteral";
         public const string ReplaceVerbatimStringLiteralWithRegularStringLiterals = "ReplaceVerbatimStringLiteralWithRegularStringLiterals";
         public const string ReplaceWhileStatementWithDoStatement = "ReplaceWhileStatementWithDoStatement";
+        public const string ReplaceWhileWithFor = "ReplaceWhileWithFor";
         public const string ReverseForLoop = "ReverseForLoop";
         public const string SimplifyLambdaExpression = "SimplifyLambdaExpression";
+        public const string SortMemberDeclarations = "SortMemberDeclarations";
         public const string SplitAttributes = "SplitAttributes";
         public const string SplitSwitchLabels = "SplitSwitchLabels";
         public const string SplitVariableDeclaration = "SplitVariableDeclaration";

@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Roslynator.CSharp.Extensions;
 using Roslynator.Extensions;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 using static Roslynator.CSharp.CSharpFactory;
@@ -39,7 +40,7 @@ namespace Roslynator.CSharp.Refactorings
 
                         using (IEnumerator<IMethodSymbol> en = baseSymbol
                             .InstanceConstructors
-                            .Where(f => !f.IsPrivate())
+                            .Where(f => !f.IsPrivate() && !f.Parameters.Any(parameter => parameter.Type.IsErrorType()))
                             .Except(declaredConstructors, ConstructorComparer.Instance)
                             .GetEnumerator())
                         {
@@ -106,12 +107,17 @@ namespace Roslynator.CSharp.Refactorings
                 EqualsValueClauseSyntax @default = null;
 
                 if (parameterSymbol.HasExplicitDefaultValue)
-                    @default = EqualsValueClause(DefaultValue(parameterSymbol).WithSimplifierAnnotation());
+                {
+                    ExpressionSyntax defaultValue = parameterSymbol.ToDefaultExpression();
+
+                    if (defaultValue != null)
+                        @default = EqualsValueClause(defaultValue.WithSimplifierAnnotation());
+                }
 
                 parameters.Add(Parameter(
                     default(SyntaxList<AttributeListSyntax>),
                     ModifierFactory.FromAccessibility(parameterSymbol.DeclaredAccessibility),
-                    Type(parameterSymbol.Type, semanticModel, position),
+                    parameterSymbol.Type.ToMinimalSyntax(semanticModel, position),
                     Identifier(parameterSymbol.Name),
                     @default));
 

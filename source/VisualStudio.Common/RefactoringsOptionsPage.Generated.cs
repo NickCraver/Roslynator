@@ -66,6 +66,9 @@ namespace Roslynator.VisualStudio
             FormatInitializer = true;
             FormatParameterList = true;
             GenerateBaseConstructors = true;
+            GenerateCombinedEnumMember = true;
+            GenerateEnumMember = true;
+            GenerateEnumValues = true;
             GenerateEventInvokingMethod = true;
             GenerateSwitchSections = true;
             InitializeLocalWithDefaultValue = true;
@@ -163,8 +166,10 @@ namespace Roslynator.VisualStudio
             ReplaceVerbatimStringLiteralWithRegularStringLiteral = true;
             ReplaceVerbatimStringLiteralWithRegularStringLiterals = true;
             ReplaceWhileStatementWithDoStatement = true;
+            ReplaceWhileWithFor = true;
             ReverseForLoop = true;
             SimplifyLambdaExpression = true;
+            SortMemberDeclarations = true;
             SplitAttributes = true;
             SplitSwitchLabels = true;
             SplitVariableDeclaration = true;
@@ -238,6 +243,9 @@ namespace Roslynator.VisualStudio
             SetIsEnabled(RefactoringIdentifiers.FormatInitializer, FormatInitializer);
             SetIsEnabled(RefactoringIdentifiers.FormatParameterList, FormatParameterList);
             SetIsEnabled(RefactoringIdentifiers.GenerateBaseConstructors, GenerateBaseConstructors);
+            SetIsEnabled(RefactoringIdentifiers.GenerateCombinedEnumMember, GenerateCombinedEnumMember);
+            SetIsEnabled(RefactoringIdentifiers.GenerateEnumMember, GenerateEnumMember);
+            SetIsEnabled(RefactoringIdentifiers.GenerateEnumValues, GenerateEnumValues);
             SetIsEnabled(RefactoringIdentifiers.GenerateEventInvokingMethod, GenerateEventInvokingMethod);
             SetIsEnabled(RefactoringIdentifiers.GenerateSwitchSections, GenerateSwitchSections);
             SetIsEnabled(RefactoringIdentifiers.InitializeLocalWithDefaultValue, InitializeLocalWithDefaultValue);
@@ -335,8 +343,10 @@ namespace Roslynator.VisualStudio
             SetIsEnabled(RefactoringIdentifiers.ReplaceVerbatimStringLiteralWithRegularStringLiteral, ReplaceVerbatimStringLiteralWithRegularStringLiteral);
             SetIsEnabled(RefactoringIdentifiers.ReplaceVerbatimStringLiteralWithRegularStringLiterals, ReplaceVerbatimStringLiteralWithRegularStringLiterals);
             SetIsEnabled(RefactoringIdentifiers.ReplaceWhileStatementWithDoStatement, ReplaceWhileStatementWithDoStatement);
+            SetIsEnabled(RefactoringIdentifiers.ReplaceWhileWithFor, ReplaceWhileWithFor);
             SetIsEnabled(RefactoringIdentifiers.ReverseForLoop, ReverseForLoop);
             SetIsEnabled(RefactoringIdentifiers.SimplifyLambdaExpression, SimplifyLambdaExpression);
+            SetIsEnabled(RefactoringIdentifiers.SortMemberDeclarations, SortMemberDeclarations);
             SetIsEnabled(RefactoringIdentifiers.SplitAttributes, SplitAttributes);
             SetIsEnabled(RefactoringIdentifiers.SplitSwitchLabels, SplitSwitchLabels);
             SetIsEnabled(RefactoringIdentifiers.SplitVariableDeclaration, SplitVariableDeclaration);
@@ -889,6 +899,36 @@ namespace Roslynator.VisualStudio
         [Description("Syntax: class declaration\r\nScope: identifier")]
         [TypeConverter(typeof (EnabledDisabledConverter))]
         public bool GenerateBaseConstructors
+        {
+            get;
+            set;
+        }
+
+        [Category(RefactoringCategory)]
+        [DisplayName("Generate combined enum member")]
+        [Description("Syntax: enum declaration (with FlagsAttribute)")]
+        [TypeConverter(typeof (EnabledDisabledConverter))]
+        public bool GenerateCombinedEnumMember
+        {
+            get;
+            set;
+        }
+
+        [Category(RefactoringCategory)]
+        [DisplayName("Generate enum member")]
+        [Description("Syntax: enum declaration (with FlagsAttribute)")]
+        [TypeConverter(typeof (EnabledDisabledConverter))]
+        public bool GenerateEnumMember
+        {
+            get;
+            set;
+        }
+
+        [Category(RefactoringCategory)]
+        [DisplayName("Generate enum values")]
+        [Description("Syntax: enum declaration (with FlagsAttribute)")]
+        [TypeConverter(typeof (EnabledDisabledConverter))]
+        public bool GenerateEnumValues
         {
             get;
             set;
@@ -1865,6 +1905,16 @@ namespace Roslynator.VisualStudio
         }
 
         [Category(RefactoringCategory)]
+        [DisplayName("Replace while statement with for statement")]
+        [Description("Syntax: while statement")]
+        [TypeConverter(typeof (EnabledDisabledConverter))]
+        public bool ReplaceWhileWithFor
+        {
+            get;
+            set;
+        }
+
+        [Category(RefactoringCategory)]
         [DisplayName("Reverse for loop")]
         [Description("Syntax: for statement")]
         [TypeConverter(typeof (EnabledDisabledConverter))]
@@ -1879,6 +1929,16 @@ namespace Roslynator.VisualStudio
         [Description("Syntax: lambda expression with block with single single-line statement\r\nScope: body")]
         [TypeConverter(typeof (EnabledDisabledConverter))]
         public bool SimplifyLambdaExpression
+        {
+            get;
+            set;
+        }
+
+        [Category(RefactoringCategory)]
+        [DisplayName("Sort member declarations")]
+        [Description("Syntax: namespace declarations, class declarations, struct declarations, interface declarations, enum declarations\r\nScope: selected member declarations")]
+        [TypeConverter(typeof (EnabledDisabledConverter))]
+        public bool SortMemberDeclarations
         {
             get;
             set;

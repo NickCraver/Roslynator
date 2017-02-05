@@ -6,6 +6,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
+using Roslynator.CSharp.Extensions;
 using Roslynator.Extensions;
 using Roslynator.Text.Extensions;
 
@@ -30,7 +31,7 @@ namespace Roslynator.CSharp.Refactorings
                     if (typeSymbol?.SupportsExplicitDeclaration() == true)
                     {
                         context.RegisterRefactoring(
-                            $"Replace 'null' with 'default({SymbolDisplay.GetMinimalDisplayString(typeSymbol, expression.Span.Start, semanticModel)})'",
+                            $"Replace 'null' with 'default({SymbolDisplay.GetMinimalString(typeSymbol, semanticModel, expression.Span.Start)})'",
                             cancellationToken =>
                             {
                                 return RefactorAsync(
@@ -52,7 +53,7 @@ namespace Roslynator.CSharp.Refactorings
         {
             SemanticModel semanticModel = await document.GetSemanticModelAsync(cancellationToken).ConfigureAwait(false);
 
-            TypeSyntax type = CSharpFactory.Type(typeSymbol, semanticModel, expression.SpanStart);
+            TypeSyntax type = typeSymbol.ToMinimalSyntax(semanticModel, expression.SpanStart);
 
             DefaultExpressionSyntax defaultExpression = SyntaxFactory.DefaultExpression(type)
                 .WithTriviaFrom(expression);

@@ -42,18 +42,18 @@ namespace Roslynator.Extensions
                 || methodKind == methodKind3;
         }
 
-        public static IEnumerable<IMethodSymbol> OverridenMethods(this IMethodSymbol methodSymbol)
+        public static IEnumerable<IMethodSymbol> OverriddenMethods(this IMethodSymbol methodSymbol)
         {
             if (methodSymbol == null)
                 throw new ArgumentNullException(nameof(methodSymbol));
 
-            IMethodSymbol overridenMethod = methodSymbol.OverriddenMethod;
+            IMethodSymbol overriddenMethod = methodSymbol.OverriddenMethod;
 
-            while (overridenMethod != null)
+            while (overriddenMethod != null)
             {
-                yield return overridenMethod;
+                yield return overriddenMethod;
 
-                overridenMethod = overridenMethod.OverriddenMethod;
+                overriddenMethod = overriddenMethod.OverriddenMethod;
             }
         }
 
@@ -838,7 +838,7 @@ namespace Roslynator.Extensions
 
             INamedTypeSymbol taskSymbol = semanticModel.GetTypeByMetadataName(MetadataNames.System_Threading_Tasks_Task);
 
-            return typeSymbol.EqualsOrDerivedFrom(taskSymbol);
+            return typeSymbol.EqualsOrInheritsFrom(taskSymbol);
         }
 
         public static bool IsConstructedFromTaskOfT(this ITypeSymbol typeSymbol, SemanticModel semanticModel)
@@ -853,7 +853,7 @@ namespace Roslynator.Extensions
             {
                 INamedTypeSymbol taskOfT = semanticModel.GetTypeByMetadataName(MetadataNames.System_Threading_Tasks_Task_T);
 
-                return ((INamedTypeSymbol)typeSymbol).ConstructedFrom.EqualsOrDerivedFrom(taskOfT);
+                return ((INamedTypeSymbol)typeSymbol).ConstructedFrom.EqualsOrInheritsFrom(taskOfT);
             }
 
             return false;
@@ -874,6 +874,37 @@ namespace Roslynator.Extensions
             return typeSymbol?.SpecialType == SpecialType.System_Collections_IEnumerable;
         }
 
+        public static bool IsIEnumerableOf(this ITypeSymbol typeSymbol, ITypeSymbol typeArgument)
+        {
+            if (typeSymbol == null)
+                throw new ArgumentNullException(nameof(typeSymbol));
+
+            if (typeArgument == null)
+                throw new ArgumentNullException(nameof(typeArgument));
+
+            if (typeSymbol.IsNamedType())
+            {
+                var namedTypeSymbol = (INamedTypeSymbol)typeSymbol;
+
+                return IsConstructedFrom(namedTypeSymbol, SpecialType.System_Collections_Generic_IEnumerable_T)
+                    && namedTypeSymbol.TypeArguments.First().Equals(typeArgument);
+            }
+
+            return false;
+        }
+
+        public static bool IsIEnumerableOf(this INamedTypeSymbol namedTypeSymbol, ITypeSymbol typeArgument)
+        {
+            if (namedTypeSymbol == null)
+                throw new ArgumentNullException(nameof(namedTypeSymbol));
+
+            if (typeArgument == null)
+                throw new ArgumentNullException(nameof(typeArgument));
+
+            return IsConstructedFrom(namedTypeSymbol, SpecialType.System_Collections_Generic_IEnumerable_T)
+                && namedTypeSymbol.TypeArguments.First().Equals(typeArgument);
+        }
+
         public static bool IsConstructedFromIEnumerableOfT(this ITypeSymbol typeSymbol)
         {
             return IsConstructedFrom(typeSymbol, SpecialType.System_Collections_Generic_IEnumerable_T);
@@ -890,13 +921,32 @@ namespace Roslynator.Extensions
                 || IsConstructedFromIEnumerableOfT(typeSymbol);
         }
 
-        public static bool EqualsOrDerivedFrom(this ITypeSymbol typeSymbol, ISymbol symbol)
+        public static bool InheritsFrom(this ITypeSymbol type, ITypeSymbol baseType, bool includeInterfaces = false)
         {
-            if (typeSymbol == null)
-                throw new ArgumentNullException(nameof(typeSymbol));
+            if (type == null)
+                throw new ArgumentNullException(nameof(type));
 
-            return typeSymbol.Equals(symbol)
-                || typeSymbol.BaseTypes().Any(f => f.Equals(symbol));
+            if (type.BaseTypes().Any(f => f.Equals(baseType)))
+            {
+                return true;
+            }
+            else if (includeInterfaces)
+            {
+                return type.AllInterfaces.Any(f => f.Equals(baseType));
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public static bool EqualsOrInheritsFrom(this ITypeSymbol type, ITypeSymbol baseType, bool includeInterfaces = false)
+        {
+            if (type == null)
+                throw new ArgumentNullException(nameof(type));
+
+            return type.Equals(baseType)
+                || InheritsFrom(type, baseType, includeInterfaces);
         }
 
         [DebuggerStepThrough]
@@ -1003,6 +1053,29 @@ namespace Roslynator.Extensions
             }
 
             return null;
+        }
+
+        public static bool IsParamsOf(this IParameterSymbol parameterSymbol, ITypeSymbol elementType)
+        {
+            if (parameterSymbol == null)
+                throw new ArgumentNullException(nameof(parameterSymbol));
+
+            if (elementType == null)
+                throw new ArgumentNullException(nameof(elementType));
+
+            if (parameterSymbol.IsParams)
+            {
+                ITypeSymbol type = parameterSymbol.Type;
+
+                if (type.IsArrayType())
+                {
+                    var arrayType = (IArrayTypeSymbol)type;
+
+                    return arrayType.ElementType.Equals(elementType);
+                }
+            }
+
+            return false;
         }
     }
 }

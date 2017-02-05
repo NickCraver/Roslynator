@@ -137,7 +137,7 @@ namespace Roslynator.CSharp
         public const string RemoveRedundantFieldInitialization = Prefix + "1129";
         public const string BitwiseOperationOnEnumWithoutFlagsAttribute = Prefix + "1130";
         public const string ReplaceReturnWithYieldReturn = Prefix + "1131";
-        public const string RemoveRedundantOverridenMember = Prefix + "1132";
+        public const string RemoveRedundantOverridingMember = Prefix + "1132";
         public const string RemoveRedundantDisposeOrCloseCall = Prefix + "1133";
         public const string RemoveRedundantContinueStatement = Prefix + "1134";
         public const string DeclareEnumMemberWithZeroValue = Prefix + "1135";
@@ -148,5 +148,16 @@ namespace Roslynator.CSharp
         public const string AddExceptionToDocumentationComment = Prefix + "1140";
         public const string AddParameterToDocumentationComment = Prefix + "1141";
         public const string AddTypeParameterToDocumentationComment = Prefix + "1142";
+        public const string SimplifyCoalesceExpression = Prefix + "1143";
+        public const string MarkContainingClassAsAbstract = Prefix + "1144";
+        public const string RemoveRedundantAsOperator = Prefix + "1145";
+        public const string UseConditionalAccess = Prefix + "1146";
+        public const string RemoveInapplicableModifier = Prefix + "1147";
+        public const string RemoveUnreachableCode = Prefix + "1148";
+        public const string RemoveImplementationFromAbstractMember = Prefix + "1149";
+        public const string CallStringConcatInsteadOfStringJoin = Prefix + "1150";
+        public const string RemoveRedundantCast = Prefix + "1151";
+        public const string MemberTypeMustMatchOverriddenMemberType = Prefix + "1152";
+        public const string AddEmptyLineAfterClosingBrace = Prefix + "1153";
     }
 }

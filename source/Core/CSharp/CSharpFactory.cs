@@ -14,11 +14,6 @@ namespace Roslynator.CSharp
 {
     public static class CSharpFactory
     {
-        private static readonly SymbolDisplayFormat _typeSymbolDisplayFormat = new SymbolDisplayFormat(
-            genericsOptions: SymbolDisplayGenericsOptions.IncludeTypeParameters,
-            typeQualificationStyle: SymbolDisplayTypeQualificationStyle.NameAndContainingTypesAndNamespaces,
-            miscellaneousOptions: SymbolDisplayMiscellaneousOptions.UseSpecialTypes);
-
         public static SyntaxTrivia IndentTrivia(int indentSize = 4)
         {
             if (indentSize == 4)
@@ -47,162 +42,6 @@ namespace Roslynator.CSharp
                 default:
                     return CarriageReturnLineFeed;
             }
-        }
-
-        public static TypeSyntax Type(ITypeSymbol typeSymbol, SymbolDisplayFormat symbolDisplayFormat = null)
-        {
-            return Type(typeSymbol, default(SemanticModel), -1, symbolDisplayFormat);
-        }
-
-        public static TypeSyntax Type(ITypeSymbol typeSymbol, SemanticModel semanticModel, int position, SymbolDisplayFormat symbolDisplayFormat = null)
-        {
-            if (typeSymbol == null)
-                throw new ArgumentNullException(nameof(typeSymbol));
-
-            if (symbolDisplayFormat == null)
-                symbolDisplayFormat = _typeSymbolDisplayFormat;
-
-            Debug.Assert(typeSymbol.SupportsExplicitDeclaration(), typeSymbol.ToDisplayString(symbolDisplayFormat));
-
-            if (!typeSymbol.SupportsExplicitDeclaration())
-                throw new ArgumentException($"Type '{typeSymbol.ToDisplayString(symbolDisplayFormat)}' does not support explicit declaration.", nameof(typeSymbol));
-
-            if (semanticModel != null)
-            {
-                return ParseTypeName(typeSymbol.ToMinimalDisplayString(semanticModel, position, symbolDisplayFormat));
-            }
-            else
-            {
-                return ParseTypeName(typeSymbol.ToDisplayString(symbolDisplayFormat));
-            }
-        }
-
-        public static ExpressionSyntax DefaultValue(ITypeSymbol typeSymbol, TypeSyntax type = null)
-        {
-            if (typeSymbol == null)
-                throw new ArgumentNullException(nameof(typeSymbol));
-
-            return DefaultValue(typeSymbol, type, default(SemanticModel), -1, default(SymbolDisplayFormat));
-        }
-
-        public static ExpressionSyntax DefaultValue(ITypeSymbol typeSymbol, SemanticModel semanticModel, int position, SymbolDisplayFormat format = null)
-        {
-            if (typeSymbol == null)
-                throw new ArgumentNullException(nameof(typeSymbol));
-
-            if (semanticModel == null)
-                throw new ArgumentNullException(nameof(semanticModel));
-
-            return DefaultValue(typeSymbol, default(TypeSyntax), semanticModel, position, format);
-        }
-
-        private static ExpressionSyntax DefaultValue(ITypeSymbol typeSymbol, TypeSyntax type, SemanticModel semanticModel, int position, SymbolDisplayFormat format = null)
-        {
-            if (typeSymbol.IsErrorType())
-                return null;
-
-            switch (typeSymbol.SpecialType)
-            {
-                case SpecialType.System_Boolean:
-                    return FalseLiteralExpression();
-                case SpecialType.System_Char:
-                    return CharacterLiteralExpression('\0');
-                case SpecialType.System_SByte:
-                case SpecialType.System_Byte:
-                case SpecialType.System_Int16:
-                case SpecialType.System_UInt16:
-                case SpecialType.System_Int32:
-                case SpecialType.System_UInt32:
-                case SpecialType.System_Int64:
-                case SpecialType.System_UInt64:
-                case SpecialType.System_Decimal:
-                case SpecialType.System_Single:
-                case SpecialType.System_Double:
-                    return ZeroLiteralExpression();
-            }
-
-            if (typeSymbol.IsConstructedFrom(SpecialType.System_Nullable_T))
-                return NullLiteralExpression();
-
-            if (typeSymbol.BaseType?.SpecialType == SpecialType.System_Enum)
-            {
-                IFieldSymbol fieldSymbol = typeSymbol.FindFieldWithConstantValue(0);
-
-                if (fieldSymbol != null)
-                {
-                    if (type == null)
-                    {
-                        type = (semanticModel != null)
-                            ? Type(typeSymbol, semanticModel, position, format).WithSimplifierAnnotation()
-                            : Type(typeSymbol).WithSimplifierAnnotation();
-                    }
-
-                    Debug.Assert(type != null);
-
-                    return SimpleMemberAccessExpression(type, IdentifierName(fieldSymbol.Name));
-                }
-                else
-                {
-                    return ZeroLiteralExpression();
-                }
-            }
-
-            if (typeSymbol.IsReferenceType)
-                return NullLiteralExpression();
-
-            if (type == null)
-            {
-                type = (semanticModel != null)
-                    ? Type(typeSymbol, semanticModel, position, format)
-                    : Type(typeSymbol).WithSimplifierAnnotation();
-            }
-
-            Debug.Assert(type != null);
-
-            return DefaultExpression(type);
-        }
-
-        public static ExpressionSyntax DefaultValue(IParameterSymbol parameterSymbol)
-        {
-            if (parameterSymbol == null)
-                throw new ArgumentNullException(nameof(parameterSymbol));
-
-            if (parameterSymbol.HasExplicitDefaultValue)
-            {
-                object value = parameterSymbol.ExplicitDefaultValue;
-
-                ITypeSymbol type = parameterSymbol.Type;
-
-                if (type.IsEnum())
-                {
-                    IFieldSymbol fieldSymbol = FindMemberWithConstantValue(type, value);
-
-                    if (fieldSymbol != null)
-                        return SimpleMemberAccessExpression(Type(type), IdentifierName(fieldSymbol.Name));
-                }
-
-                return ConstantExpression(value);
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        private static IFieldSymbol FindMemberWithConstantValue(ITypeSymbol typeSymbol, object value)
-        {
-            foreach (IFieldSymbol fieldSymbol in typeSymbol.GetFields())
-            {
-                if (fieldSymbol.HasConstantValue)
-                {
-                    object constantValue = fieldSymbol.ConstantValue;
-
-                    if (value.Equals(constantValue))
-                        return fieldSymbol;
-                }
-            }
-
-            return null;
         }
 
         public static ExpressionSyntax ConstantExpression(object value)
@@ -283,29 +122,13 @@ namespace Roslynator.CSharp
 
         public static FieldDeclarationSyntax FieldDeclaration(SyntaxTokenList modifiers, TypeSyntax type, SyntaxToken identifier, ExpressionSyntax value = null)
         {
-            return FieldDeclaration(
-                modifiers,
-                type,
-                identifier,
-                (value != null) ? EqualsValueClause(value) : null);
-        }
-
-        public static FieldDeclarationSyntax FieldDeclaration(SyntaxTokenList modifiers, TypeSyntax type, string identifier, EqualsValueClauseSyntax initializer)
-        {
-            return FieldDeclaration(modifiers, type, Identifier(identifier), initializer);
-        }
-
-        public static FieldDeclarationSyntax FieldDeclaration(SyntaxTokenList modifiers, TypeSyntax type, SyntaxToken identifier, EqualsValueClauseSyntax initializer)
-        {
             return SyntaxFactory.FieldDeclaration(
                 default(SyntaxList<AttributeListSyntax>),
                 modifiers,
                 VariableDeclaration(
                     type,
-                    VariableDeclarator(
-                        identifier,
-                        default(BracketedArgumentListSyntax),
-                        initializer)));
+                    identifier,
+                    (value != null) ? EqualsValueClause(value) : null));
         }
 
         public static ArgumentListSyntax ArgumentList(ArgumentSyntax argument)
@@ -436,6 +259,26 @@ namespace Roslynator.CSharp
                 default:
                     throw new ArgumentOutOfRangeException(nameof(kind));
             }
+        }
+
+        public static VariableDeclaratorSyntax VariableDeclarator(string identifier, EqualsValueClauseSyntax initializer)
+        {
+            return VariableDeclarator(Identifier(identifier), initializer);
+        }
+
+        public static VariableDeclaratorSyntax VariableDeclarator(SyntaxToken identifier, EqualsValueClauseSyntax initializer)
+        {
+            return SyntaxFactory.VariableDeclarator(identifier, default(BracketedArgumentListSyntax), initializer);
+        }
+
+        public static VariableDeclarationSyntax VariableDeclaration(TypeSyntax type, string identifier, EqualsValueClauseSyntax initializer)
+        {
+            return VariableDeclaration(type, Identifier(identifier), initializer);
+        }
+
+        public static VariableDeclarationSyntax VariableDeclaration(TypeSyntax type, SyntaxToken identifier, EqualsValueClauseSyntax initializer)
+        {
+            return VariableDeclaration(type, VariableDeclarator(identifier, initializer));
         }
 
         public static VariableDeclarationSyntax VariableDeclaration(TypeSyntax type, VariableDeclaratorSyntax variable)
@@ -1233,14 +1076,14 @@ namespace Roslynator.CSharp
             return SyntaxFactory.ObjectCreationExpression(type, argumentList, default(InitializerExpressionSyntax));
         }
 
-        public static ParameterSyntax Parameter(TypeSyntax type, SyntaxToken identifier)
+        public static ParameterSyntax Parameter(TypeSyntax type, SyntaxToken identifier, EqualsValueClauseSyntax initializer = null)
         {
             return SyntaxFactory.Parameter(
                 default(SyntaxList<AttributeListSyntax>),
                 default(SyntaxTokenList),
                 type,
                 identifier,
-                default(EqualsValueClauseSyntax));
+                initializer);
         }
 
         public static PrefixUnaryExpressionSyntax PreIncrementExpression(ExpressionSyntax operand)
@@ -1344,8 +1187,8 @@ namespace Roslynator.CSharp
         public static LocalDeclarationStatementSyntax LocalDeclarationStatement(TypeSyntax type, SyntaxToken identifier, ExpressionSyntax value = null)
         {
             VariableDeclaratorSyntax declarator = (value != null)
-                ? VariableDeclarator(identifier, default(BracketedArgumentListSyntax), EqualsValueClause(value))
-                : VariableDeclarator(identifier);
+                ? VariableDeclarator(identifier, EqualsValueClause(value))
+                : SyntaxFactory.VariableDeclarator(identifier);
 
             return SyntaxFactory.LocalDeclarationStatement(
                 SyntaxFactory.VariableDeclaration(

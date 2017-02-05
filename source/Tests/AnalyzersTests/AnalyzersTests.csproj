@@ -44,6 +44,7 @@
     <Compile Include="AddBraces.cs" />
     <Compile Include="AddBracesToSwitchSectionWithMultipleStatements.cs" />
     <Compile Include="AddDocumentationComment.cs" />
+    <Compile Include="AddEmptyLineAfterClosingBrace.cs" />
     <Compile Include="AddEmptyLineAfterEmbeddedStatement.cs" />
     <Compile Include="AddBreakStatementToSwitchSection.cs" />
     <Compile Include="AddEmptyLineAfterLastStatementInDoStatement.cs" />
@@ -61,6 +62,7 @@
     <Compile Include="AvoidEmbeddedStatementInIfElse.cs" />
     <Compile Include="AvoidUsageOfWhileStatementToCreateInfiniteLoop.cs" />
     <Compile Include="CallFindMethodInsteadOfFirstOrDefaultMethod.cs" />
+    <Compile Include="CoalesceExpressionIsRedundant.cs" />
     <Compile Include="CombineEnumerableWhereMethodChain.cs" />
     <Compile Include="DeclareEnumMemberWithZeroValue.cs" />
     <Compile Include="DeclareTypeInsideNamespace.cs" />
@@ -74,10 +76,15 @@
     <Compile Include="FormatEmptyBlock.cs" />
     <Compile Include="FormatSwitchSectionStatementOnSeparateLine.cs" />
     <Compile Include="InlineLocalVariable.cs" />
+    <Compile Include="GenerateCombinedEnumMember.cs" />
+    <Compile Include="GenerateEnumMember.cs" />
+    <Compile Include="GenerateEnumValues.cs" />
     <Compile Include="MarkClassAsStatic.cs" />
     <Compile Include="DeclareUsingDirectiveOnTopLevel.cs" />
     <Compile Include="AvoidNullLiteralExpressionOnLeftSideOfBinaryExpression.cs" />
+    <Compile Include="MarkContainingClassAsAbstract.cs" />
     <Compile Include="MarkMemberAsStatic.cs" />
+    <Compile Include="MemberTypeMustMatchOverridenMemberType.cs" />
     <Compile Include="MergeIfStatementWithNestedIfStatement.cs" />
     <Compile Include="MarkLocalVariableAsConst.cs" />
     <Compile Include="MergeInterpolationIntoInterpolatedString.cs" />
@@ -86,12 +93,17 @@
     <Compile Include="MergeLocalDeclarationWithInitialization.cs" />
     <Compile Include="MergeLocalDeclarationWithReturnStatement.cs" />
     <Compile Include="MergeSwitchSectionsWithEquivalentContent.cs" />
+    <Compile Include="RemoveImplementationFromAbstractOrInterfaceMember.cs" />
     <Compile Include="RemoveBraces.cs" />
     <Compile Include="RemoveEmptyDestructor.cs" />
     <Compile Include="RemoveEmptyRegion.cs" />
     <Compile Include="RemoveFileWithNoCode.cs" />
+    <Compile Include="RemovePartialModifierFromTypeWithSinglePart.cs" />
+    <Compile Include="RemoveRedundantAsOperator.cs" />
+    <Compile Include="RemoveInapplicableModifier.cs" />
     <Compile Include="RemoveRedundantBooleanLiteral.cs" />
     <Compile Include="RemoveRedundantBraces.cs" />
+    <Compile Include="RemoveRedundantCast.cs" />
     <Compile Include="RemoveRedundantConstructor.cs" />
     <Compile Include="RemoveRedundantContinueStatement.cs" />
     <Compile Include="RemoveRedundantDelegateCreation.cs" />
@@ -99,15 +111,19 @@
     <Compile Include="RemoveRedundantEmptyLine.cs" />
     <Compile Include="RemoveRedundantFieldInitialization.cs" />
     <Compile Include="RemoveRedundantOverridenMember.cs" />
+    <Compile Include="RemoveRedundantSealedModifier.cs" />
     <Compile Include="RemoveRedundantStringToCharArrayCall.cs" />
     <Compile Include="RemoveRedundantToStringCall.cs" />
+    <Compile Include="RemoveUnreachableCode.cs" />
     <Compile Include="RenamePrivateFieldAccordingToCamelCaseWithUnderscore.cs" />
+    <Compile Include="ReorderModifiers.cs" />
     <Compile Include="ReplaceAnyMethodWithCountOrLengthProperty.cs" />
     <Compile Include="ReplaceCountMethodWithAnyMethod.cs" />
     <Compile Include="ReplaceCountMethodWithCountOrLengthProperty.cs" />
     <Compile Include="ReplaceIfStatementWithReturnStatement.cs" />
     <Compile Include="ReplaceReturnStatementWithExpressionStatement.cs" />
     <Compile Include="ReplaceReturnWithYieldReturn.cs" />
+    <Compile Include="UseConditionalAccess.cs" />
     <Compile Include="UseElementAccessInsteadOfElementAt.cs" />
     <Compile Include="Tuple.cs" />
     <Compile Include="UseCoalesceExpression.cs" />
@@ -121,6 +137,7 @@
     <Compile Include="UseExplicitTypeInsteadOfVar.cs" />
     <Compile Include="UseExpressionBodiedMember.cs" />
     <Compile Include="UseNameOfOperator.cs" />
+    <Compile Include="CallStringConcatInsteadOfStringJoin.cs" />
     <Compile Include="UseStringIsNullOrEmptyMethod.cs" />
     <Compile Include="SimplifyLinqMethodChain.cs" />
     <Compile Include="UseCastMethodInsteadOfSelectMethod.cs" />
@@ -145,13 +162,26 @@
     <Compile Include="UseVarInsteadOfExplicitType.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.CodeAnalysis, Version=1.3.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.CodeAnalysis.Common.1.3.2\lib\portable-net45+win8\Microsoft.CodeAnalysis.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CodeAnalysis.CSharp, Version=1.3.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.CodeAnalysis.CSharp.1.3.2\lib\portable-net45+win8\Microsoft.CodeAnalysis.CSharp.dll</HintPath>
+    </Reference>
     <Reference Include="System.Collections.Immutable, Version=1.2.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Collections.Immutable.1.3.0\lib\portable-net45+win8+wp8+wpa81\System.Collections.Immutable.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="System.Reflection.Metadata, Version=1.2.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Reflection.Metadata.1.2.0\lib\portable-net45+win8\System.Reflection.Metadata.dll</HintPath>
+    </Reference>
     <Reference Include="System.ValueTuple, Version=4.0.1.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.ValueTuple.4.3.0\lib\portable-net40+sl4+win8+wp8\System.ValueTuple.dll</HintPath>
     </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Analyzer Include="..\packages\Microsoft.CodeAnalysis.Analyzers.1.1.0\analyzers\dotnet\cs\Microsoft.CodeAnalysis.Analyzers.dll" />
+    <Analyzer Include="..\packages\Microsoft.CodeAnalysis.Analyzers.1.1.0\analyzers\dotnet\cs\Microsoft.CodeAnalysis.CSharp.Analyzers.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

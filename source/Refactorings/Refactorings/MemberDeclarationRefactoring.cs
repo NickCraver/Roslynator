@@ -81,30 +81,34 @@ namespace Roslynator.CSharp.Refactorings
 
             switch (member.Kind())
             {
+                case SyntaxKind.NamespaceDeclaration:
+                    {
+                        NamespaceDeclarationRefactoring.ComputeRefactorings(context, (NamespaceDeclarationSyntax)member);
+                        break;
+                    }
                 case SyntaxKind.ClassDeclaration:
                     {
-                        var classDeclaration = (ClassDeclarationSyntax)member;
-
-                        ExtractTypeDeclarationToNewFileRefactoring.ComputeRefactorings(context, classDeclaration);
-
-                        if (context.IsRefactoringEnabled(RefactoringIdentifiers.GenerateBaseConstructors))
-                            await GenerateBaseConstructorsRefactoring.ComputeRefactoringAsync(context, classDeclaration).ConfigureAwait(false);
-
+                        await ClassDeclarationRefactoring.ComputeRefactorings(context, (ClassDeclarationSyntax)member).ConfigureAwait(false);
                         break;
                     }
                 case SyntaxKind.StructDeclaration:
                     {
-                        ExtractTypeDeclarationToNewFileRefactoring.ComputeRefactorings(context, (StructDeclarationSyntax)member);
+                        StructDeclarationRefactoring.ComputeRefactorings(context, (StructDeclarationSyntax)member);
                         break;
                     }
                 case SyntaxKind.InterfaceDeclaration:
                     {
-                        ExtractTypeDeclarationToNewFileRefactoring.ComputeRefactorings(context, (InterfaceDeclarationSyntax)member);
+                        InterfaceDeclarationRefactoring.ComputeRefactorings(context, (InterfaceDeclarationSyntax)member);
                         break;
                     }
                 case SyntaxKind.EnumDeclaration:
                     {
-                        ExtractTypeDeclarationToNewFileRefactoring.ComputeRefactorings(context, (EnumDeclarationSyntax)member);
+                        await EnumDeclarationRefactoring.ComputeRefactoringAsync(context, (EnumDeclarationSyntax)member).ConfigureAwait(false);
+                        break;
+                    }
+                case SyntaxKind.EnumMemberDeclaration:
+                    {
+                        await EnumMemberDeclarationRefactoring.ComputeRefactoringAsync(context, (EnumMemberDeclarationSyntax)member).ConfigureAwait(false);
                         break;
                     }
                 case SyntaxKind.DelegateDeclaration:

@@ -24,7 +24,10 @@ namespace Roslynator.CSharp.CodeFixProviders
                     DiagnosticIdentifiers.SimplifyBooleanComparison,
                     DiagnosticIdentifiers.ReplaceCountMethodWithAnyMethod,
                     DiagnosticIdentifiers.AvoidNullLiteralExpressionOnLeftSideOfBinaryExpression,
-                    DiagnosticIdentifiers.UseStringIsNullOrEmptyMethod);
+                    DiagnosticIdentifiers.UseStringIsNullOrEmptyMethod,
+                    DiagnosticIdentifiers.SimplifyCoalesceExpression,
+                    DiagnosticIdentifiers.RemoveRedundantAsOperator,
+                    DiagnosticIdentifiers.UseConditionalAccess);
             }
         }
 
@@ -79,6 +82,44 @@ namespace Roslynator.CSharp.CodeFixProviders
                             CodeAction codeAction = CodeAction.Create(
                                 "Use 'string.IsNullOrEmpty' method",
                                 cancellationToken => UseStringIsNullOrEmptyMethodRefactoring.RefactorAsync(context.Document, binaryExpression, cancellationToken),
+                                diagnostic.Id + EquivalenceKeySuffix);
+
+                            context.RegisterCodeFix(codeAction, diagnostic);
+                            break;
+                        }
+                    case DiagnosticIdentifiers.SimplifyCoalesceExpression:
+                        {
+                            ExpressionSyntax expression = binaryExpression.Left;
+
+                            if (expression == null
+                                || !context.Span.Contains(expression.Span))
+                            {
+                                expression = binaryExpression.Right;
+                            }
+
+                            CodeAction codeAction = CodeAction.Create(
+                                "Simplify coalesce expression",
+                                cancellationToken => SimplifyCoalesceExpressionRefactoring.RefactorAsync(context.Document, binaryExpression, expression, cancellationToken),
+                                diagnostic.Id + EquivalenceKeySuffix);
+
+                            context.RegisterCodeFix(codeAction, diagnostic);
+                            break;
+                        }
+                    case DiagnosticIdentifiers.RemoveRedundantAsOperator:
+                        {
+                            CodeAction codeAction = CodeAction.Create(
+                                "Remove redundant 'as' operator",
+                                cancellationToken => RemoveRedundantAsOperatorRefactoring.RefactorAsync(context.Document, binaryExpression, cancellationToken),
+                                diagnostic.Id + EquivalenceKeySuffix);
+
+                            context.RegisterCodeFix(codeAction, diagnostic);
+                            break;
+                        }
+                    case DiagnosticIdentifiers.UseConditionalAccess:
+                        {
+                            CodeAction codeAction = CodeAction.Create(
+                                "Use conditional access",
+                                cancellationToken => UseConditionalAccessRefactoring.RefactorAsync(context.Document, binaryExpression, cancellationToken),
                                 diagnostic.Id + EquivalenceKeySuffix);
 
                             context.RegisterCodeFix(codeAction, diagnostic);

@@ -155,14 +155,14 @@ namespace Roslynator.CSharp.Refactorings
                 case SyntaxKind.ConstructorDeclaration:
                     return s + "base constructor";
                 case SyntaxKind.MethodDeclaration:
-                    return s + "overriden method";
+                    return s + "overridden method";
                 case SyntaxKind.PropertyDeclaration:
-                    return s + "overriden property";
+                    return s + "overridden property";
                 case SyntaxKind.IndexerDeclaration:
-                    return s + "overriden indexer";
+                    return s + "overridden indexer";
                 case SyntaxKind.EventDeclaration:
                 case SyntaxKind.EventFieldDeclaration:
-                    return s + "overriden event";
+                    return s + "overridden event";
                 default:
                     {
                         Debug.Assert(false, memberDeclaration.Kind().ToString());
@@ -415,7 +415,7 @@ namespace Roslynator.CSharp.Refactorings
 
                 if (typeSymbol != null)
                 {
-                    return SymbolDisplay.GetMinimalDisplayString(typeSymbol, _position, _semanticModel)
+                    return SymbolDisplay.GetMinimalString(typeSymbol, _semanticModel, _position)
                         .Replace('<', '{')
                         .Replace('>', '}');
                 }
