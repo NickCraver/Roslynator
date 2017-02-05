@@ -1,8 +1,8 @@
 ﻿// Copyright (c) Josef Pihrt. All rights reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
-using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
+using Roslynator.CSharp.Refactorings.SortMemberDeclarations;
 using Roslynator.Extensions;
 
 namespace Roslynator.CSharp.Refactorings
@@ -51,6 +51,14 @@ namespace Roslynator.CSharp.Refactorings
 
                     return tcs.Task;
                 });
+
+            context.RegisterRefactoring(
+                "Sort members",
+                c => SortMemberDeclarationsRefactoring.RefactorAsync(
+                    context.Document,
+                    new MemberDeclarationComparer(MemberDeclarationSortMode.ByKind),
+                    new EnumMemberDeclarationNameComparer(),
+                    cancellationToken: c));
         }
     }
 }
