@@ -21,29 +21,6 @@ namespace Roslynator.CSharp.Refactorings
                         "Remove comment",
                         cancellationToken => Remover.RemoveCommentAsync(context.Document, trivia, cancellationToken));
                 }
-
-                if (context.IsRefactoringEnabled(RefactoringIdentifiers.RemoveAllComments))
-                {
-                    context.RegisterRefactoring(
-                        "Remove all comments",
-                        cancellationToken => Remover.RemoveCommentsAsync(context.Document, CommentRemoveOptions.All, cancellationToken));
-                }
-
-                if (context.IsRefactoringEnabled(RefactoringIdentifiers.RemoveAllCommentsExceptDocumentationComments)
-                    && (kind == SyntaxKind.SingleLineCommentTrivia || kind == SyntaxKind.MultiLineCommentTrivia))
-                {
-                    context.RegisterRefactoring(
-                        "Remove all comments (except documentation comments)",
-                        cancellationToken => Remover.RemoveCommentsAsync(context.Document, CommentRemoveOptions.AllExceptDocumentation, cancellationToken));
-                }
-
-                if (context.IsRefactoringEnabled(RefactoringIdentifiers.RemoveAllDocumentationComments)
-                    && IsDocumentationComment(kind))
-                {
-                    context.RegisterRefactoring(
-                        "Remove all documentation comments",
-                        cancellationToken => Remover.RemoveCommentsAsync(context.Document, CommentRemoveOptions.Documentation, cancellationToken));
-                }
             }
         }
 

@@ -192,14 +192,6 @@ namespace Roslynator.CSharp.Refactorings
 
                             SyntaxKind kind = node.Kind();
 
-                            if (kind == SyntaxKind.RegionDirectiveTrivia
-                                || kind == SyntaxKind.EndRegionDirectiveTrivia)
-                            {
-                                RegionDirectiveTriviaRefactoring.ComputeRefactorings(this);
-                            }
-
-                            RemoveAllPreprocessorDirectivesRefactoring.ComputeRefactorings(this);
-
                             if (kind == SyntaxKind.RegionDirectiveTrivia)
                             {
                                 RegionDirectiveTriviaRefactoring.ComputeRefactorings(this, (RegionDirectiveTriviaSyntax)node);
