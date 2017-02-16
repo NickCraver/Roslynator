@@ -20,38 +20,48 @@ namespace Roslynator.CSharp.Refactorings
 
             if (expression != null)
             {
-                SimpleNameSyntax name = GetSimpleName(expression);
+                SyntaxNodeOrToken nodeOrToken = GetNodeOrToken(expression);
 
-                if (name?.Span.Contains(context.Span) == true)
+                if (nodeOrToken.Span.Contains(context.Span))
                 {
                     SemanticModel semanticModel = await context.GetSemanticModelAsync().ConfigureAwait(false);
 
-                    IMethodSymbol methodSymbol = semanticModel.GetMethodSymbol(invocation, context.CancellationToken);
+                    ExtensionMethodInfo info = semanticModel.GetExtensionMethodInfo(invocation, ExtensionMethodKind.Ordinary, context.CancellationToken);
 
-                    if (methodSymbol?.IsExtensionMethod == true
-                        && methodSymbol.MethodKind == MethodKind.Ordinary
+                    if (info.IsValid
                         && invocation.ArgumentList?.Arguments.Any() == true)
                     {
-                        context.RegisterRefactoring(
-                            "Call extension method as instance method",
-                            cancellationToken =>
-                            {
-                                return RefactorAsync(
-                                    context.Document,
-                                    invocation,
-                                    context.CancellationToken);
-                            });
+                        InvocationExpressionSyntax newInvocation = GetNewInvocation(invocation);
+
+                        if (semanticModel
+                            .GetSpeculativeMethodSymbol(invocation.SpanStart, newInvocation)?
+                            .ReducedFromOrSelf()
+                            .Equals(info.Symbol.ConstructedFrom) == true)
+                        {
+                            context.RegisterRefactoring(
+                                "Call extension method as instance method",
+                                cancellationToken =>
+                                {
+                                    return RefactorAsync(
+                                        context.Document,
+                                        invocation,
+                                        newInvocation,
+                                        context.CancellationToken);
+                                });
+                        }
                     }
                 }
             }
         }
 
-        private static SimpleNameSyntax GetSimpleName(ExpressionSyntax expression)
+        private static SyntaxNodeOrToken GetNodeOrToken(ExpressionSyntax expression)
         {
             switch (expression.Kind())
             {
                 case SyntaxKind.IdentifierName:
                     return (SimpleNameSyntax)expression;
+                case SyntaxKind.GenericName:
+                    return ((GenericNameSyntax)expression).Identifier;
                 case SyntaxKind.SimpleMemberAccessExpression:
                     return ((MemberAccessExpressionSyntax)expression).Name;
                 case SyntaxKind.MemberBindingExpression:
@@ -64,10 +74,16 @@ namespace Roslynator.CSharp.Refactorings
             }
         }
 
-        private static async Task<Document> RefactorAsync(
+        private static Task<Document> RefactorAsync(
             Document document,
             InvocationExpressionSyntax invocation,
+            InvocationExpressionSyntax newInvocation,
             CancellationToken cancellationToken)
+        {
+            return document.ReplaceNodeAsync(invocation, newInvocation, cancellationToken);
+        }
+
+        private static InvocationExpressionSyntax GetNewInvocation(InvocationExpressionSyntax invocation)
         {
             ExpressionSyntax expression = invocation.Expression;
             ArgumentListSyntax argumentList = invocation.ArgumentList;
@@ -98,15 +114,13 @@ namespace Roslynator.CSharp.Refactorings
                 default:
                     {
                         Debug.Assert(false, expression.Kind().ToString());
-                        return document;
+                        return invocation;
                     }
             }
 
-            InvocationExpressionSyntax newInvocation = invocation
+            return invocation
                 .WithExpression(newMemberAccess)
                 .WithArgumentList(argumentList.WithArguments(arguments.Remove(argument)));
-
-            return await document.ReplaceNodeAsync(invocation, newInvocation, cancellationToken).ConfigureAwait(false);
         }
     }
 }

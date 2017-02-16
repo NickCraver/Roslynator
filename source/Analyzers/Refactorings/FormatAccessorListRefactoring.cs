@@ -1,6 +1,5 @@
 ﻿// Copyright (c) Josef Pihrt. All rights reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
-using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -11,12 +10,16 @@ using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Text;
 using Roslynator.CSharp.Extensions;
 using Roslynator.Extensions;
-using static Roslynator.CSharp.CSharpFactory;
 
 namespace Roslynator.CSharp.Refactorings
 {
     internal static class FormatAccessorListRefactoring
     {
+        private static DiagnosticDescriptor DiagnosticDescriptor
+        {
+            get { return DiagnosticDescriptors.FormatAccessorList; }
+        }
+
         public static void Analyze(SyntaxNodeAnalysisContext context, AccessorListSyntax accessorList)
         {
             SyntaxList<AccessorDeclarationSyntax> accessors = accessorList.Accessors;
@@ -25,85 +28,36 @@ namespace Roslynator.CSharp.Refactorings
             {
                 if (accessorList.IsSingleLine(includeExteriorTrivia: false))
                 {
-                    ReportDiagnostic(context, accessorList);
+                    context.ReportDiagnostic(DiagnosticDescriptor, accessorList.GetLocation());
                 }
                 else
                 {
                     foreach (AccessorDeclarationSyntax accessor in accessors)
                     {
                         if (ShouldBeFormatted(accessor))
-                            ReportDiagnostic(context, accessor);
+                            context.ReportDiagnostic(DiagnosticDescriptor, accessor.GetLocation());
                     }
                 }
             }
-            else
+            else if (accessorList.IsParentKind(SyntaxKind.PropertyDeclaration)
+                && accessors.All(f => !f.AttributeLists.Any())
+                && !accessorList.IsSingleLine(includeExteriorTrivia: false))
             {
-                SyntaxNode parent = accessorList.Parent;
+                var propertyDeclaration = (PropertyDeclarationSyntax)accessorList.Parent;
 
-                switch (parent?.Kind())
+                if (!propertyDeclaration.Identifier.IsMissing
+                    && !accessorList.CloseBraceToken.IsMissing)
                 {
-                    case SyntaxKind.PropertyDeclaration:
-                        {
-                            if (accessors.All(f => !f.AttributeLists.Any())
-                                && !accessorList.IsSingleLine(includeExteriorTrivia: false))
-                            {
-                                var propertyDeclaration = (PropertyDeclarationSyntax)parent;
-                                SyntaxToken identifier = propertyDeclaration.Identifier;
+                    TextSpan span = TextSpan.FromBounds(
+                        propertyDeclaration.Identifier.Span.End,
+                        accessorList.CloseBraceToken.Span.Start);
 
-                                if (!identifier.IsMissing)
-                                {
-                                    SyntaxToken closeBrace = accessorList.CloseBraceToken;
-
-                                    if (!closeBrace.IsMissing)
-                                    {
-                                        TextSpan span = TextSpan.FromBounds(identifier.Span.End, closeBrace.Span.Start);
-
-                                        if (propertyDeclaration
-                                            .DescendantTrivia(span)
-                                            .All(f => f.IsWhitespaceOrEndOfLineTrivia()))
-                                        {
-                                            ReportDiagnostic(context, accessorList);
-                                        }
-                                    }
-                                }
-                            }
-
-                            break;
-                        }
-                    case SyntaxKind.IndexerDeclaration:
-                        {
-                            if (accessors.All(f => !f.AttributeLists.Any())
-                                && !accessorList.IsSingleLine(includeExteriorTrivia: false))
-                            {
-                                var indexerDeclaration = (IndexerDeclarationSyntax)parent;
-
-                                BracketedParameterListSyntax parameterList = indexerDeclaration.ParameterList;
-
-                                if (parameterList != null)
-                                {
-                                    SyntaxToken closeBracket = parameterList.CloseBracketToken;
-
-                                    if (!closeBracket.IsMissing)
-                                    {
-                                        SyntaxToken closeBrace = accessorList.CloseBraceToken;
-
-                                        if (!closeBrace.IsMissing)
-                                        {
-                                            TextSpan span = TextSpan.FromBounds(closeBracket.Span.End, closeBrace.Span.Start);
-
-                                            if (indexerDeclaration
-                                                .DescendantTrivia(span)
-                                                .All(f => f.IsWhitespaceOrEndOfLineTrivia()))
-                                            {
-                                                ReportDiagnostic(context, accessorList);
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-
-                            break;
-                        }
+                    if (propertyDeclaration
+                        .DescendantTrivia(span)
+                        .All(f => f.IsWhitespaceOrEndOfLineTrivia()))
+                    {
+                        context.ReportDiagnostic(DiagnosticDescriptor, accessorList.GetLocation());
+                    }
                 }
             }
         }
@@ -142,11 +96,6 @@ namespace Roslynator.CSharp.Refactorings
             return false;
         }
 
-        private static void ReportDiagnostic(SyntaxNodeAnalysisContext context, SyntaxNode node)
-        {
-            context.ReportDiagnostic(DiagnosticDescriptors.FormatAccessorList, node);
-        }
-
         public static async Task<Document> RefactorAsync(
             Document document,
             AccessorListSyntax accessorList,
@@ -154,45 +103,16 @@ namespace Roslynator.CSharp.Refactorings
         {
             if (accessorList.Accessors.All(f => f.BodyOrExpressionBody() == null))
             {
-                SyntaxNode parent = accessorList.Parent;
+                var propertyDeclaration = (PropertyDeclarationSyntax)accessorList.Parent;
 
-                switch (parent.Kind())
-                {
-                    case SyntaxKind.PropertyDeclaration:
-                        {
-                            var propertyDeclaration = (PropertyDeclarationSyntax)parent;
+                TextSpan span = TextSpan.FromBounds(
+                    propertyDeclaration.Identifier.Span.End,
+                    accessorList.CloseBraceToken.Span.Start);
 
-                            TextSpan span = TextSpan.FromBounds(
-                                propertyDeclaration.Identifier.Span.End,
-                                accessorList.CloseBraceToken.Span.Start);
+                PropertyDeclarationSyntax newPropertyDeclaration = Remover.RemoveWhitespaceOrEndOfLine(propertyDeclaration, span)
+                    .WithFormatterAnnotation();
 
-                            PropertyDeclarationSyntax newNode = Remover.RemoveWhitespaceOrEndOfLine(propertyDeclaration, span);
-
-                            newNode = newNode.WithFormatterAnnotation();
-
-                            return await document.ReplaceNodeAsync(propertyDeclaration, newNode, cancellationToken).ConfigureAwait(false);
-                        }
-                    case SyntaxKind.IndexerDeclaration:
-                        {
-                            var indexerDeclaration = (IndexerDeclarationSyntax)parent;
-
-                            TextSpan span = TextSpan.FromBounds(
-                                indexerDeclaration.ParameterList.CloseBracketToken.Span.End,
-                                accessorList.CloseBraceToken.Span.Start);
-
-                            IndexerDeclarationSyntax newNode = Remover.RemoveWhitespaceOrEndOfLine(indexerDeclaration, span);
-
-                            newNode = newNode.WithFormatterAnnotation();
-
-                            return await document.ReplaceNodeAsync(indexerDeclaration, newNode, cancellationToken).ConfigureAwait(false);
-                        }
-                    default:
-                        {
-                            Debug.Assert(false, parent.Kind().ToString());
-                            return document;
-                        }
-                }
-
+                return await document.ReplaceNodeAsync(propertyDeclaration, newPropertyDeclaration, cancellationToken).ConfigureAwait(false);
             }
             else
             {
@@ -217,7 +137,7 @@ namespace Roslynator.CSharp.Refactorings
                 SyntaxTriviaList trailingTrivia = accessor.GetTrailingTrivia();
 
                 if (accessorList.SyntaxTree.IsSingleLineSpan(trailingTrivia.Span, cancellationToken))
-                    return newAccessorList.ReplaceNode(accessor, accessor.AppendToTrailingTrivia(NewLineTrivia()));
+                    return newAccessorList.ReplaceNode(accessor, accessor.AppendToTrailingTrivia(CSharpFactory.NewLineTrivia()));
             }
 
             return newAccessorList;
@@ -230,7 +150,7 @@ namespace Roslynator.CSharp.Refactorings
                 SyntaxTriviaList triviaList = accessorList
                     .CloseBraceToken
                     .LeadingTrivia
-                    .Add(NewLineTrivia());
+                    .Add(CSharpFactory.NewLineTrivia());
 
                 return Remover.RemoveWhitespaceOrEndOfLine(accessorList)
                     .WithCloseBraceToken(accessorList.CloseBraceToken.WithLeadingTrivia(triviaList));

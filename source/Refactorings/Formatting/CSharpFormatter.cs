@@ -29,11 +29,9 @@ namespace Roslynator.CSharp.Formatting
             return await document.ReplaceNodeAsync(condition, newNode, cancellationToken).ConfigureAwait(false);
         }
 
-        public static TNode ToSingleLine<TNode>(
-            TNode condition,
-            CancellationToken cancellationToken = default(CancellationToken)) where TNode : SyntaxNode
+        public static TNode ToSingleLine<TNode>(TNode node) where TNode : SyntaxNode
         {
-            return Remover.RemoveWhitespaceOrEndOfLine(condition)
+            return Remover.RemoveWhitespaceOrEndOfLine(node, node.Span)
                 .WithFormatterAnnotation();
         }
 
@@ -42,7 +40,7 @@ namespace Roslynator.CSharp.Formatting
             InitializerExpressionSyntax initializer,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            InitializerExpressionSyntax newInitializer = ToSingleLine(initializer, cancellationToken);
+            InitializerExpressionSyntax newInitializer = ToSingleLine(initializer);
 
             SyntaxNode parent = initializer.Parent;
             SyntaxNode newParent = parent;

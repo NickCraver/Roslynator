@@ -11,37 +11,6 @@ namespace Roslynator.Extensions
 {
     public static class SymbolExtensions
     {
-        [DebuggerStepThrough]
-        public static bool IsMethodKind(this IMethodSymbol methodSymbol, MethodKind methodKind)
-        {
-            return methodSymbol?.MethodKind == methodKind;
-        }
-
-        [DebuggerStepThrough]
-        public static bool IsMethodKind(this IMethodSymbol methodSymbol, MethodKind methodKind1, MethodKind methodKind2)
-        {
-            if (methodSymbol == null)
-                return false;
-
-            MethodKind methodKind = methodSymbol.MethodKind;
-
-            return methodKind == methodKind1
-                || methodKind == methodKind2;
-        }
-
-        [DebuggerStepThrough]
-        public static bool IsMethodKind(this IMethodSymbol methodSymbol, MethodKind methodKind1, MethodKind methodKind2, MethodKind methodKind3)
-        {
-            if (methodSymbol == null)
-                return false;
-
-            MethodKind methodKind = methodSymbol.MethodKind;
-
-            return methodKind == methodKind1
-                || methodKind == methodKind2
-                || methodKind == methodKind3;
-        }
-
         public static IEnumerable<IMethodSymbol> OverriddenMethods(this IMethodSymbol methodSymbol)
         {
             if (methodSymbol == null)
@@ -74,6 +43,14 @@ namespace Roslynator.Extensions
             }
         }
 
+        public static IMethodSymbol ReducedFromOrSelf(this IMethodSymbol methodSymbol)
+        {
+            if (methodSymbol == null)
+                throw new ArgumentNullException(nameof(methodSymbol));
+
+            return methodSymbol.ReducedFrom ?? methodSymbol;
+        }
+
         public static IParameterSymbol SingleParameterOrDefault(this IPropertySymbol propertySymbol)
         {
             if (propertySymbol == null)
@@ -91,14 +68,6 @@ namespace Roslynator.Extensions
             }
         }
 
-        public static IMethodSymbol ReducedFromOrSelf(this IMethodSymbol methodSymbol)
-        {
-            if (methodSymbol == null)
-                throw new ArgumentNullException(nameof(methodSymbol));
-
-            return methodSymbol.ReducedFrom ?? methodSymbol;
-        }
-
         public static ISymbol FindImplementedInterfaceMember(this ISymbol symbol)
         {
             if (symbol == null)
@@ -108,11 +77,11 @@ namespace Roslynator.Extensions
 
             if (containingType != null)
             {
-                ImmutableArray<INamedTypeSymbol> allInterfaces = containingType.AllInterfaces;
+                ImmutableArray<INamedTypeSymbol> interfaces = containingType.Interfaces;
 
-                for (int i = 0; i < allInterfaces.Length; i++)
+                for (int i = 0; i < interfaces.Length; i++)
                 {
-                    ImmutableArray<ISymbol> members = allInterfaces[i].GetMembers();
+                    ImmutableArray<ISymbol> members = interfaces[i].GetMembers();
 
                     for (int j = 0; j < members.Length; j++)
                     {
@@ -134,11 +103,11 @@ namespace Roslynator.Extensions
 
             if (containingType != null)
             {
-                ImmutableArray<INamedTypeSymbol> allInterfaces = containingType.AllInterfaces;
+                ImmutableArray<INamedTypeSymbol> interfaces = containingType.Interfaces;
 
-                for (int i = 0; i < allInterfaces.Length; i++)
+                for (int i = 0; i < interfaces.Length; i++)
                 {
-                    ImmutableArray<ISymbol> members = allInterfaces[i].GetMembers();
+                    ImmutableArray<ISymbol> members = interfaces[i].GetMembers();
 
                     for (int j = 0; j < members.Length; j++)
                     {
@@ -336,44 +305,6 @@ namespace Roslynator.Extensions
             return symbol?.Kind == SymbolKind.TypeParameter;
         }
 
-        public static bool IsPublicProperty(this ISymbol symbol)
-        {
-            return symbol?.IsPublic() == true
-                && symbol.IsProperty();
-        }
-
-        public static bool IsPublicInstanceProperty(this ISymbol symbol)
-        {
-            return symbol?.IsPublic() == true
-                && !symbol.IsStatic
-                && symbol.IsProperty();
-        }
-
-        public static bool IsPublicStaticProperty(this ISymbol symbol)
-        {
-            return symbol?.IsPublic() == true
-                && symbol.IsStatic
-                && symbol.IsProperty();
-        }
-
-        public static bool IsPrivateField(this ISymbol symbol)
-        {
-            return symbol?.IsPrivate() == true
-                && symbol.IsField();
-        }
-
-        public static bool IsInstanceField(this ISymbol symbol)
-        {
-            return symbol?.IsStatic == false
-                && symbol.IsField();
-        }
-
-        public static bool IsStaticField(this ISymbol symbol)
-        {
-            return symbol?.IsStatic == true
-                && symbol.IsField();
-        }
-
         public static bool IsEnumField(this ISymbol symbol)
         {
             return symbol?.Kind == SymbolKind.Field
@@ -396,60 +327,10 @@ namespace Roslynator.Extensions
             } while (containingNamespace != null);
         }
 
-        public static bool IsStaticClass(this ITypeSymbol typeSymbol)
-        {
-            return typeSymbol?.IsStatic == true
-                && typeSymbol.IsClass();
-        }
-
-        public static bool IsInstanceClass(this ITypeSymbol typeSymbol)
-        {
-            return typeSymbol?.IsStatic == false
-                && typeSymbol.IsClass();
-        }
-
-        public static bool IsVoidMethod(this ISymbol typeSymbol)
-        {
-            return typeSymbol?.IsMethod() == true
-                && ((IMethodSymbol)typeSymbol).ReturnsVoid;
-        }
-
         public static bool IsAsyncMethod(this ISymbol symbol)
         {
             return symbol?.IsMethod() == true
                 && ((IMethodSymbol)symbol).IsAsync;
-        }
-
-        public static bool IsInstanceMethod(this ISymbol symbol)
-        {
-            return symbol?.IsStatic == false
-                && symbol.IsMethod();
-        }
-
-        public static bool IsStaticMethod(this ISymbol symbol)
-        {
-            return symbol?.IsStatic == true
-                && symbol.IsMethod();
-        }
-
-        public static bool IsPublicInstanceMethod(this ISymbol symbol)
-        {
-            return symbol?.IsPublic() == true
-                && !symbol.IsStatic
-                && symbol.IsMethod();
-        }
-
-        public static bool IsPublicMethod(this ISymbol symbol)
-        {
-            return symbol?.IsPublic() == true
-                && symbol.IsMethod();
-        }
-
-        public static bool IsPublicStaticMethod(this ISymbol symbol)
-        {
-            return symbol?.IsPublic() == true
-                && symbol.IsStatic
-                && symbol.IsMethod();
         }
 
         public static bool IsPubliclyVisible(this ISymbol symbol)
@@ -473,8 +354,17 @@ namespace Roslynator.Extensions
                                 || accessibility == Accessibility.Protected
                                 || accessibility == Accessibility.ProtectedOrInternal)
                             {
-                                symbol = symbol.ContainingType;
-                                break;
+                                INamedTypeSymbol containingType = symbol.ContainingType;
+
+                                if (containingType != null)
+                                {
+                                    symbol = containingType;
+                                    break;
+                                }
+                                else
+                                {
+                                    return symbol.ContainingNamespace != null;
+                                }
                             }
                             else
                             {
@@ -490,6 +380,14 @@ namespace Roslynator.Extensions
             } while (symbol != null);
 
             return false;
+        }
+
+        public static bool IsAccessible(this ISymbol symbol, int position, SemanticModel semanticModel)
+        {
+            if (semanticModel == null)
+                throw new ArgumentNullException(nameof(semanticModel));
+
+            return semanticModel.IsAccessible(position, symbol);
         }
 
         public static bool HasConstantValue(this IFieldSymbol fieldSymbol, sbyte value)
@@ -724,6 +622,12 @@ namespace Roslynator.Extensions
             return typeSymbol?.TypeKind == TypeKind.Enum;
         }
 
+        [DebuggerStepThrough]
+        public static bool IsDelegate(this ITypeSymbol typeSymbol)
+        {
+            return typeSymbol?.TypeKind == TypeKind.Delegate;
+        }
+
         public static bool SupportsExplicitDeclaration(this ITypeSymbol typeSymbol)
         {
             if (typeSymbol == null)
@@ -887,7 +791,23 @@ namespace Roslynator.Extensions
                 var namedTypeSymbol = (INamedTypeSymbol)typeSymbol;
 
                 return IsConstructedFrom(namedTypeSymbol, SpecialType.System_Collections_Generic_IEnumerable_T)
-                    && namedTypeSymbol.TypeArguments.First().Equals(typeArgument);
+                    && namedTypeSymbol.TypeArguments[0].Equals(typeArgument);
+            }
+
+            return false;
+        }
+
+        public static bool IsIEnumerableOf(this ITypeSymbol typeSymbol, SpecialType specialTypeArgument)
+        {
+            if (typeSymbol == null)
+                throw new ArgumentNullException(nameof(typeSymbol));
+
+            if (typeSymbol.IsNamedType())
+            {
+                var namedTypeSymbol = (INamedTypeSymbol)typeSymbol;
+
+                return IsConstructedFrom(namedTypeSymbol, SpecialType.System_Collections_Generic_IEnumerable_T)
+                    && namedTypeSymbol.TypeArguments[0].SpecialType == specialTypeArgument;
             }
 
             return false;
@@ -902,7 +822,16 @@ namespace Roslynator.Extensions
                 throw new ArgumentNullException(nameof(typeArgument));
 
             return IsConstructedFrom(namedTypeSymbol, SpecialType.System_Collections_Generic_IEnumerable_T)
-                && namedTypeSymbol.TypeArguments.First().Equals(typeArgument);
+                && namedTypeSymbol.TypeArguments[0].Equals(typeArgument);
+        }
+
+        public static bool IsIEnumerableOf(this INamedTypeSymbol namedTypeSymbol, SpecialType specialTypeArgument)
+        {
+            if (namedTypeSymbol == null)
+                throw new ArgumentNullException(nameof(namedTypeSymbol));
+
+            return IsConstructedFrom(namedTypeSymbol, SpecialType.System_Collections_Generic_IEnumerable_T)
+                && namedTypeSymbol.TypeArguments[0].SpecialType == specialTypeArgument;
         }
 
         public static bool IsConstructedFromIEnumerableOfT(this ITypeSymbol typeSymbol)
@@ -1072,6 +1001,26 @@ namespace Roslynator.Extensions
                     var arrayType = (IArrayTypeSymbol)type;
 
                     return arrayType.ElementType.Equals(elementType);
+                }
+            }
+
+            return false;
+        }
+
+        public static bool IsParamsOf(this IParameterSymbol parameterSymbol, SpecialType elementType)
+        {
+            if (parameterSymbol == null)
+                throw new ArgumentNullException(nameof(parameterSymbol));
+
+            if (parameterSymbol.IsParams)
+            {
+                ITypeSymbol type = parameterSymbol.Type;
+
+                if (type.IsArrayType())
+                {
+                    var arrayType = (IArrayTypeSymbol)type;
+
+                    return arrayType.ElementType.SpecialType == elementType;
                 }
             }
 

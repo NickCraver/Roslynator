@@ -1,5 +1,6 @@
 ﻿// Copyright (c) Josef Pihrt. All rights reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
+using System;
 using System.Collections.Immutable;
 using System.Threading;
 using System.Threading.Tasks;
@@ -40,29 +41,26 @@ namespace Roslynator.CSharp.Refactorings
                             SemanticModel semanticModel = context.SemanticModel;
                             CancellationToken cancellationToken = context.CancellationToken;
 
-                            IMethodSymbol methodSymbol = semanticModel.GetMethodSymbol(invocation, cancellationToken);
+                            MethodInfo info = semanticModel.GetMethodInfo(invocation, cancellationToken);
 
-                            INamedTypeSymbol stringSymbol = semanticModel.Compilation.GetSpecialType(SpecialType.System_String);
-
-                            if (methodSymbol != null
-                                && Symbol.IsMethod(
-                                    methodSymbol: methodSymbol,
-                                    containingType: stringSymbol,
-                                    accessibility: Accessibility.Public,
-                                    isStatic: true,
-                                    returnType: stringSymbol,
-                                    name: "Join",
-                                    arity: 0))
+                            if (info.IsValid
+                                && info.HasName("Join")
+                                && info.IsContainingType(SpecialType.System_String)
+                                && info.IsPublic
+                                && info.IsStatic
+                                && info.IsReturnType(SpecialType.System_String)
+                                && !info.IsGenericMethod
+                                && !info.IsExtensionMethod)
                             {
-                                ImmutableArray<IParameterSymbol> parameters = methodSymbol.Parameters;
+                                ImmutableArray<IParameterSymbol> parameters = info.Parameters;
 
                                 if (parameters.Length == 2
-                                    && parameters[0].Type.Equals(stringSymbol))
+                                    && parameters[0].Type.IsString())
                                 {
                                     IParameterSymbol parameter = parameters[1];
 
-                                    if (parameter.IsParamsOf(stringSymbol)
-                                        || parameter.IsParamsOf(semanticModel.Compilation.ObjectType)
+                                    if (parameter.IsParamsOf(SpecialType.System_String)
+                                        || parameter.IsParamsOf(SpecialType.System_Object)
                                         || parameter.Type.IsConstructedFromIEnumerableOfT())
                                     {
                                         ArgumentSyntax firstArgument = arguments.First();
@@ -74,7 +72,7 @@ namespace Roslynator.CSharp.Refactorings
                                         {
                                             context.ReportDiagnostic(
                                                 DiagnosticDescriptors.CallStringConcatInsteadOfStringJoin,
-                                                name.GetLocation());
+                                                name);
                                         }
                                     }
                                 }

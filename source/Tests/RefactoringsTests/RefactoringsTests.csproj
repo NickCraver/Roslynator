@@ -73,6 +73,7 @@
     <Compile Include="ReplaceAsWithCastRefactoring.cs" />
     <Compile Include="ReplaceCastWithAsRefactoring.cs" />
     <Compile Include="ReplaceConditionalExpressionWithExpressionRefactoring.cs" />
+    <Compile Include="ReplaceExpressionWithConstantValueRefactoring.cs" />
     <Compile Include="ReplaceEqualsExpressionWithStringEqualsRefactoring.cs" />
     <Compile Include="ReplaceEqualsExpressionWithStringMethodRefactoring.cs" />
     <Compile Include="ReplaceIfElseWithAssignment.cs" />
@@ -207,7 +208,7 @@
     <Compile Include="AddBracesToIfElseRefactoring.cs" />
     <Compile Include="AddBracesRefactoring.cs" />
     <Compile Include="AddBooleanComparisonRefactoring.cs" />
-    <Compile Include="ReplaceMethodInvocationWithElementAccessRefactoring.cs" />
+    <Compile Include="UseElementAccessInsteadOfEnumerableMethodRefactoring.cs" />
     <Compile Include="MergeAttributesRefactoring.cs" />
     <Compile Include="SplitAttributesRefactoring.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

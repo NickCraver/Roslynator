@@ -82,13 +82,5 @@ namespace Roslynator.CSharp.Refactorings.Tests
             {
             }
         }
-
-        private enum FooEnum
-        {
-            B = 2,
-            A = 1,
-            D = 4,
-            C = 3,
-        }
     }
 }

@@ -20,14 +20,14 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
             get
             {
                 return ImmutableArray.Create(
-                  DiagnosticDescriptors.ReplaceAnonymousMethodWithLambdaExpression,
-                  DiagnosticDescriptors.ReplaceAnonymousMethodWithLambdaExpressionFadeOut);
+                  DiagnosticDescriptors.UseLambdaExpressionInsteadOfAnonymousMethod,
+                  DiagnosticDescriptors.UseLambdaExpressionInsteadOfAnonymousMethodFadeOut);
             }
         }
 
         private static DiagnosticDescriptor DiagnosticDescriptor
         {
-            get { return DiagnosticDescriptors.ReplaceAnonymousMethodWithLambdaExpressionFadeOut; }
+            get { return DiagnosticDescriptors.UseLambdaExpressionInsteadOfAnonymousMethodFadeOut; }
         }
 
         public override void Initialize(AnalysisContext context)
@@ -44,11 +44,11 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
         {
             var anonymousMethod = (AnonymousMethodExpressionSyntax)context.Node;
 
-            if (ReplaceAnonymousMethodWithLambdaExpressionRefactoring.CanRefactor(anonymousMethod))
+            if (UseLambdaExpressionInsteadOfAnonymousMethodRefactoring.CanRefactor(anonymousMethod))
             {
                 context.ReportDiagnostic(
-                    DiagnosticDescriptors.ReplaceAnonymousMethodWithLambdaExpression,
-                    anonymousMethod.GetLocation());
+                    DiagnosticDescriptors.UseLambdaExpressionInsteadOfAnonymousMethod,
+                    anonymousMethod);
 
                 FadeOut(context, anonymousMethod);
             }

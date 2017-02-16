@@ -34,7 +34,7 @@ namespace Roslynator.CSharp.Refactorings
             {
                 SemanticModel semanticModel = await context.GetSemanticModelAsync().ConfigureAwait(false);
 
-                IMethodSymbol methodSymbol = semanticModel.GetMethodSymbol(expression, context.CancellationToken);
+                var methodSymbol = semanticModel.GetSymbol(expression, context.CancellationToken) as IMethodSymbol;
 
                 if (methodSymbol?.IsImplicitlyDeclared == false
                     && methodSymbol.PartialDefinitionPart == null)
@@ -71,14 +71,14 @@ namespace Roslynator.CSharp.Refactorings
             MethodDeclarationSyntax methodDeclaration,
             CancellationToken cancellationToken)
         {
-            ParenthesizedLambdaExpressionSyntax lambda = CreateLambdaExpression(expression, methodDeclaration)
+            ParenthesizedLambdaExpressionSyntax lambda = CreateLambdaExpression(methodDeclaration)
                 .WithTriviaFrom(expression)
                 .WithFormatterAnnotation();
 
             return await document.ReplaceNodeAsync(expression, lambda, cancellationToken).ConfigureAwait(false);
         }
 
-        private static ParenthesizedLambdaExpressionSyntax CreateLambdaExpression(ExpressionSyntax expression, MethodDeclarationSyntax methodDeclaration)
+        private static ParenthesizedLambdaExpressionSyntax CreateLambdaExpression(MethodDeclarationSyntax methodDeclaration)
         {
             CSharpSyntaxNode body = GetLambdaBody(methodDeclaration);
 
